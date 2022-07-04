@@ -18,8 +18,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@modules/*": ["src/modules/*", "build/modules/*"],
-      "@common/*": ["src/common/*", "build/modules/*"]
+      "@modules/*": ["src/modules/*"],
+      "@common/*": ["src/common/*"]
     }
   }
 }

@@ -1,4 +1,3 @@
-import "module-alias/register";
 import { NestFactory, HttpAdapterHost } from "@nestjs/core";
 import {
   BadRequestException,
