@@ -1,0 +1,35 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "src",
+  "testRegex": ".*\\.spec\\.ts$",
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/$1",
+    "^@common/(.*)$": "<rootDir>/common/$1",
+    "^@modules/(.*)$": "<rootDir>/modules/$1"
+  },
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": ["<rootDir>/modules/**/*.ts"],
+  "coveragePathIgnorePatterns": [
+    "/node_modules/",
+    "common",
+    "<rootDir>/main.ts",
+    "index.ts",
+    ".types.ts",
+    ".type.ts",
+    ".interface.ts",
+    ".module.ts",
+    ".entity.ts",
+    ".dto.ts",
+    ".spec.ts",
+    ".decorator.ts",
+    ".filter.ts",
+    ".guard.ts",
+    ".helper.ts",
+    ".interceptor.ts",
+    ".pipe.ts"
+  ],
+  "coverageDirectory": "../coverage",
+  "testEnvironment": "node"
+}
