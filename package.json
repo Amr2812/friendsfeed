@@ -34,7 +34,6 @@
     "class-validator": "0.13.2",
     "cookie-parser": "1.4.6",
     "helmet": "5.1.0",
-    "module-alias": "2.2.2",
     "passport": "0.6.0",
     "passport-jwt": "4.0.0",
     "pg": "8.7.3",
@@ -68,7 +67,6 @@
     "ts-jest": "^28.0.5",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.8.2",
-    "tsconfig-paths": "^4.0.0",
     "typescript": "^4.7.4"
   }
 }
