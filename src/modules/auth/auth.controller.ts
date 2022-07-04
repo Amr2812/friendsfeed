@@ -16,7 +16,7 @@ import {
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 import { Response } from "express";
-import { User } from "@modules/users/user.entity";
+import { User } from "@modules/users/User.entity";
 import { ValidateResDtoInterceptor } from "@common/interceptors/validate-res-dto.interceptor";
 import { GetUser, Public } from "@common/decorators";
 import { RefreshJwtGuard } from "@common/guards";
