@@ -193,8 +193,8 @@ describe("AuthService", () => {
         ["id", "refreshToken", "email"]
       );
       expect(argon2.verify).toHaveBeenCalledWith(
-        mockTokens().refreshToken,
-        mockHashedRefreshToken()
+        mockHashedRefreshToken(),
+        mockTokens().refreshToken
       );
       expect(authService.getTokens).toHaveBeenCalledWith({
         id: mockReqUser().id,
@@ -239,8 +239,8 @@ describe("AuthService", () => {
         ["id", "refreshToken", "email"]
       );
       expect(argon2.verify).toHaveBeenCalledWith(
-        mockTokens().refreshToken,
-        mockHashedRefreshToken()
+        mockHashedRefreshToken(),
+        mockTokens().refreshToken
       );
       expect(authService.getTokens).not.toHaveBeenCalled();
       expect(authService.updateRefreshToken).not.toHaveBeenCalled();

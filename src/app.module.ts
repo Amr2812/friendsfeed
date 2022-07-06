@@ -7,6 +7,7 @@ import { jwtConfig, storageConfig } from "./config";
 import ormConfig from "../ormconfig";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UsersModule } from "./modules/users/users.module";
+import { PostsModule } from "./modules/posts/posts.module";
 
 @Module({
   imports: [
@@ -15,8 +16,9 @@ import { UsersModule } from "./modules/users/users.module";
       load: [jwtConfig, storageConfig]
     }),
     TypeOrmModule.forRoot(ormConfig),
+    AuthModule,
     UsersModule,
-    AuthModule
+    PostsModule
   ],
   providers: [
     {

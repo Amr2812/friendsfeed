@@ -3,6 +3,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
   UploadedFile,
   UseInterceptors
 } from "@nestjs/common";
@@ -10,23 +11,30 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConsumes,
+  ApiOperation,
   ApiTags
 } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { GetUser } from "@common/decorators";
+import { GetUser, Public } from "@common/decorators";
 import { ValidateResDtoInterceptor } from "@common/interceptors/validate-res-dto.interceptor";
 import { UsersService } from "./users.service";
 import {
   GetProfileResDto,
   GetUserByIdResDto,
+  GetUserPostsDto,
+  GetUserPostsResDto,
   UpdateProfilePictureDto,
   UpdateProfilePictureResDto
 } from "./dto";
+import { PostsService } from "@modules/posts/posts.service";
 
 @ApiTags("Users")
 @Controller("users")
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private postsService: PostsService
+  ) {}
 
   @Get("/me")
   @UseInterceptors(new ValidateResDtoInterceptor(GetProfileResDto))
@@ -35,6 +43,8 @@ export class UsersController {
   }
 
   @Get("/:id")
+  @Public()
+  @ApiOperation({ summary: "Public" })
   @UseInterceptors(new ValidateResDtoInterceptor(GetUserByIdResDto))
   getUserById(@Param("id") id: number): Promise<GetUserByIdResDto> {
     return this.usersService.getUserById(id);
@@ -58,5 +68,16 @@ export class UsersController {
     const { picture } = await this.usersService.updatePicture(userId, file);
 
     return { picture };
+  }
+
+  @Get("/:id/posts")
+  @Public()
+  @ApiOperation({ summary: "Public" })
+  @UseInterceptors(new ValidateResDtoInterceptor(GetUserPostsResDto))
+  getUserPosts(
+    @Param("id") userId: number,
+    @Query() getUserPostsDto: GetUserPostsDto
+  ): Promise<GetUserPostsResDto> {
+    return this.postsService.getUserPosts(userId, getUserPostsDto);
   }
 }

@@ -12,14 +12,15 @@ import {
 import { ConfigService } from "@nestjs/config";
 import {
   ApiConflictResponse,
+  ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 import { Response } from "express";
-import { User } from "@modules/users/User.entity";
 import { ValidateResDtoInterceptor } from "@common/interceptors/validate-res-dto.interceptor";
 import { GetUser, Public } from "@common/decorators";
 import { RefreshJwtGuard } from "@common/guards";
+import { ReqUser } from "@common/types";
 import { AuthService } from "./auth.service";
 import { LoginDto, LoginResDto, SignupDto, SignupResDto } from "./dto";
 import { UserWithRefreshToken } from "./types";
@@ -34,6 +35,7 @@ export class AuthController {
 
   @Post("/signup")
   @Public()
+  @ApiOperation({ summary: "Public" })
   @UseInterceptors(new ValidateResDtoInterceptor(SignupResDto))
   @ApiConflictResponse({ description: "email already exists" })
   async signup(
@@ -60,6 +62,7 @@ export class AuthController {
 
   @Post("/login")
   @Public()
+  @ApiOperation({ summary: "Public" })
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(new ValidateResDtoInterceptor(LoginResDto))
   @ApiUnauthorizedResponse({ description: "Invalid credentials" })
@@ -87,7 +90,7 @@ export class AuthController {
 
   @Delete("/logout")
   async logout(
-    @GetUser() user: User,
+    @GetUser() user: ReqUser,
     @Res({ passthrough: true }) res: Response
   ): Promise<void> {
     await this.authService.logout(user.id);
@@ -99,6 +102,7 @@ export class AuthController {
 
   @Post("/refresh")
   @Public()
+  @ApiOperation({ summary: "Public" })
   @UseGuards(RefreshJwtGuard)
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse({ description: "Access denied" })

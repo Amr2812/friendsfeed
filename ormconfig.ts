@@ -19,7 +19,6 @@ const config: PostgresConnectionOptions = {
       : {
           rejectUnauthorized: false
         },
-  synchronize: process.env.NODE_ENV === "development",
   logging: process.env.NODE_ENV === "development"
 };
 

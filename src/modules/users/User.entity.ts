@@ -4,9 +4,11 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn
 } from "typeorm";
 import * as bcrypt from "bcrypt";
+import { Post } from "@modules/posts/Post.entity";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -32,6 +34,12 @@ export class User extends BaseEntity {
   @ApiHideProperty()
   @Column({ nullable: true, select: false })
   refreshToken: string;
+
+  @OneToMany(() => Post, post => post.user, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  posts: Post[];
 
   @BeforeInsert()
   async hashPassword() {
