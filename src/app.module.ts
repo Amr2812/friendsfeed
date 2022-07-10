@@ -8,6 +8,7 @@ import ormConfig from "../ormconfig";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UsersModule } from "./modules/users/users.module";
 import { PostsModule } from "./modules/posts/posts.module";
+import { CommentsModule } from "@modules/comments/comments.module";
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { PostsModule } from "./modules/posts/posts.module";
     TypeOrmModule.forRoot(ormConfig),
     AuthModule,
     UsersModule,
-    PostsModule
+    PostsModule,
+    CommentsModule
   ],
   providers: [
     {

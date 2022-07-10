@@ -19,6 +19,7 @@ export class SignupDto {
   password: string;
 
   @IsString()
+  @Length(1, 200)
   @IsOptional()
   bio?: string;
 }

@@ -8,10 +8,10 @@ import { PostData } from "./types";
 export class PostRepository extends Repository<Post> {
   async createPost(userId: number, post: Partial<PostData>) {
     const createdPost = await this.save({ ...post, user: { id: userId } });
-    return this.findPost(createdPost.id);
+    return this.findPostById(createdPost.id);
   }
 
-  findPost(postId: number): Promise<PostData> {
+  findPostById(postId: number): Promise<PostData> {
     return this.createQueryBuilder("post")
       .leftJoinAndSelect("post.user", "user")
       .select([
@@ -70,7 +70,7 @@ export class PostRepository extends Repository<Post> {
 
     if (affected === 0) throw new NotFoundException("Post not found");
 
-    return this.findPost(postId);
+    return this.findPostById(postId);
   }
 
   async deletePost(postId: number, userId: number) {

@@ -1,18 +1,8 @@
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsInt,
-  ValidateNested
-} from "class-validator";
+import { IsNotEmpty, IsOptional, IsInt, ValidateNested } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { GetPostByIdResDto } from "../../posts/dto";
+import { GetCommentResDto } from "./get-comment.dto";
 
-export class GetUserPostsDto {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNotEmpty()
-  search: string;
-
+export class GetPostCommentsDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
@@ -26,10 +16,10 @@ export class GetUserPostsDto {
   limit: number;
 }
 
-export class GetUserPostsResDto {
+export class GetPostCommentsResDto {
   @IsNotEmpty()
   @ValidateNested({ each: true })
-  posts: GetPostByIdResDto[];
+  comments: GetCommentResDto[];
 
   @IsNotEmpty()
   count: number;

@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Post } from "@modules/posts/Post.entity";
+import { Comment } from "@modules/comments/Comment.entity";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -40,6 +41,12 @@ export class User extends BaseEntity {
     onDelete: "CASCADE"
   })
   posts: Post[];
+
+  @OneToMany(() => Comment, comment => comment.user, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  comments: Comment[];
 
   @BeforeInsert()
   async hashPassword() {
