@@ -76,8 +76,9 @@ export class UsersController {
   @UseInterceptors(new ValidateResDtoInterceptor(GetUserPostsResDto))
   getUserPosts(
     @Param("id") userId: number,
-    @Query() getUserPostsDto: GetUserPostsDto
+    @Query() getUserPostsDto: GetUserPostsDto,
+    @GetUser("id") currentUserId: number
   ): Promise<GetUserPostsResDto> {
-    return this.postsService.getUserPosts(userId, getUserPostsDto);
+    return this.postsService.getUserPosts(userId, getUserPostsDto, currentUserId);
   }
 }

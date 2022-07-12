@@ -1,5 +1,5 @@
-import { IsNotEmpty, ValidateNested } from "class-validator";
-import { MiniUser } from ".";
+import { IsNotEmpty, IsOptional, ValidateNested } from "class-validator";
+import { MiniUser } from "@common/types";
 
 export class GetPostByIdResDto {
   @IsNotEmpty()
@@ -14,4 +14,14 @@ export class GetPostByIdResDto {
 
   @IsNotEmpty()
   createdAt: Date;
+
+  @IsNotEmpty()
+  likesCount: number;
+
+  @IsNotEmpty()
+  commentsCount: number;
+
+  @IsOptional()
+  @IsNotEmpty()
+  likeId: number | null;
 }

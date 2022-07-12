@@ -1,7 +1,6 @@
 import {
   BaseEntity,
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn
@@ -9,21 +8,15 @@ import {
 import { User } from "@modules/users/User.entity";
 import { Post } from "@modules/posts/Post.entity";
 
-@Entity("comments")
-export class Comment extends BaseEntity {
+@Entity("posts_likes")
+export class Like extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.comments, { eager: true })
+  @ManyToOne(() => User, user => user.likes, { eager: true })
   user: User;
 
-  @Column()
-  text: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @ManyToOne(() => Post, post => post.comments)
+  @ManyToOne(() => Post, post => post.likes)
   post: Post;
 
   @Column()

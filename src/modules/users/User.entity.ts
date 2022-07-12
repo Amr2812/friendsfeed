@@ -10,6 +10,7 @@ import {
 import * as bcrypt from "bcrypt";
 import { Post } from "@modules/posts/Post.entity";
 import { Comment } from "@modules/comments/Comment.entity";
+import { Like } from "@modules/likes/Like.entity";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -47,6 +48,12 @@ export class User extends BaseEntity {
     onDelete: "CASCADE"
   })
   comments: Comment[];
+
+  @OneToMany(() => Like, like => like.user, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  likes: Like[];
 
   @BeforeInsert()
   async hashPassword() {

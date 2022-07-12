@@ -3,15 +3,17 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CloudStorageService, GCStorage } from "@common/providers";
-import { PostsService } from "@modules/posts/posts.service";
 import { PostRepository } from "@modules/posts/posts.repository";
+import { PostsService } from "@modules/posts/posts.service";
+import { LikeRepository } from "@modules/likes/likes.repository";
+import { LikesService } from "@modules/likes/likes.service";
 import { UserRepository } from "./user.repository";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserRepository, PostRepository]),
+    TypeOrmModule.forFeature([UserRepository, PostRepository, LikeRepository]),
     MulterModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -32,6 +34,6 @@ import { UsersService } from "./users.service";
     })
   ],
   controllers: [UsersController],
-  providers: [UsersService, CloudStorageService, PostsService]
+  providers: [UsersService, CloudStorageService, PostsService, LikesService]
 })
 export class UsersModule {}

@@ -9,7 +9,12 @@ import {
   Query,
   UseInterceptors
 } from "@nestjs/common";
-import { ApiNotFoundResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiConflictResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiTags
+} from "@nestjs/swagger";
 import { GetUser, Public } from "@common/decorators";
 import { ValidateResDtoInterceptor } from "@common/interceptors/validate-res-dto.interceptor";
 import { PostsService } from "./posts.service";
@@ -25,16 +30,20 @@ import {
   GetPostCommentsDto,
   GetPostCommentsResDto,
   UpdateCommentDto,
-  UpdateCommentResDto
+  UpdateCommentResDto,
+  GetPostLikesDto,
+  GetPostLikesResDto
 } from "./dto";
 import { CommentsService } from "@modules/comments/comments.service";
+import { LikesService } from "@modules/likes/likes.service";
 
 @ApiTags("Posts")
 @Controller("posts")
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
-    private readonly commentsService: CommentsService
+    private readonly commentsService: CommentsService,
+    private readonly likesService: LikesService
   ) {}
 
   @Post()
@@ -51,8 +60,11 @@ export class PostsController {
   @ApiOperation({ summary: "Public" })
   @UseInterceptors(new ValidateResDtoInterceptor(GetPostByIdResDto))
   @ApiNotFoundResponse({ description: "Post not found" })
-  getPostById(@Param("id") postId: number): Promise<GetPostByIdResDto> {
-    return this.postsService.getPost(postId);
+  getPostById(
+    @Param("id") postId: number,
+    @GetUser("id") userId: number
+  ): Promise<GetPostByIdResDto> {
+    return this.postsService.getPost(postId, userId);
   }
 
   @Patch("/:id")
@@ -131,5 +143,36 @@ export class PostsController {
     @GetUser("id") userId: number
   ): Promise<void> {
     await this.commentsService.deleteComment(commentId, postId, userId);
+  }
+
+  @Post("/:id/likes")
+  @ApiConflictResponse({ description: "You have already liked this post" })
+  @ApiNotFoundResponse({ description: "Post or user not found" })
+  async likePost(
+    @Param("id") postId: number,
+    @GetUser("id") userId: number
+  ): Promise<void> {
+    await this.likesService.likePost(postId, userId);
+  }
+
+  @Get("/:id/likes")
+  @Public()
+  @ApiOperation({ summary: "Public" })
+  @UseInterceptors(new ValidateResDtoInterceptor(GetPostLikesResDto))
+  async getLikes(
+    @Param("id") postId: number,
+    @Query() getPostLikesDto: GetPostLikesDto
+  ): Promise<GetPostLikesResDto> {
+    return this.likesService.getPostLikes(postId, getPostLikesDto);
+  }
+
+  @Delete("/:postId/likes/:likeId")
+  @ApiNotFoundResponse({ description: "You haven't liked this post" })
+  async unlikePost(
+    @Param("postId") postId: number,
+    @Param("likeId") likeId: number,
+    @GetUser("id") userId: number
+  ): Promise<void> {
+    await this.likesService.unlikePost(postId, likeId, userId);
   }
 }

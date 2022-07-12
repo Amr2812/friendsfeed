@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { User } from "@modules/users/User.entity";
 import { Comment } from "@modules/comments/Comment.entity";
+import { Like } from "@modules/likes/Like.entity";
 
 @Entity("posts")
 export class Post extends BaseEntity {
@@ -21,6 +22,12 @@ export class Post extends BaseEntity {
   @Column()
   content: string;
 
+  @OneToMany(() => Like, like => like.post, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  likes: Like[];
+
   @OneToMany(() => Comment, comment => comment.post, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE"
@@ -29,4 +36,8 @@ export class Post extends BaseEntity {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  likesCount: number;
+  commentsCount: number;
+  likeId: number;
 }

@@ -8,13 +8,25 @@ import { PostData } from "./types";
 export class PostRepository extends Repository<Post> {
   async createPost(userId: number, post: Partial<PostData>) {
     const createdPost = await this.save({ ...post, user: { id: userId } });
-    return this.findPostById(createdPost.id);
+    return this.findPostById(createdPost.id, userId);
   }
 
-  findPostById(postId: number): Promise<PostData> {
-    return this.createQueryBuilder("post")
-      .leftJoinAndSelect("post.user", "user")
-      .select([
+  findPostById(postId: number, userId: number): Promise<PostData> {
+    const qb = this.createQueryBuilder("post").leftJoinAndSelect(
+      "post.user",
+      "user"
+    );
+
+    if (userId) {
+      qb.leftJoinAndSelect("post.likes", "like", "like.userId = :userId", {
+        userId
+      }).select(["like.id"]);
+    }
+
+    return qb
+      .loadRelationCountAndMap("post.likesCount", "post.likes")
+      .loadRelationCountAndMap("post.commentsCount", "post.comments")
+      .addSelect([
         "post.id",
         "post.content",
         "post.createdAt",
@@ -29,6 +41,8 @@ export class PostRepository extends Repository<Post> {
   async findUserPosts(userId: number, filter: GetUserPostsDto) {
     const qb = this.createQueryBuilder("post")
       .leftJoinAndSelect("post.user", "user")
+      .loadRelationCountAndMap("post.likesCount", "post.likes")
+      .loadRelationCountAndMap("post.commentsCount", "post.comments")
       .select([
         "post.id",
         "post.content",
@@ -70,7 +84,7 @@ export class PostRepository extends Repository<Post> {
 
     if (affected === 0) throw new NotFoundException("Post not found");
 
-    return this.findPostById(postId);
+    return this.findPostById(postId, userId);
   }
 
   async deletePost(postId: number, userId: number) {

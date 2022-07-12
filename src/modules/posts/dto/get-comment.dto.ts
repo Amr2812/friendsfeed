@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { MiniUser } from ".";
+import { MiniUser } from "@common/types";
 
 export class GetCommentResDto {
   @IsNotEmpty()
