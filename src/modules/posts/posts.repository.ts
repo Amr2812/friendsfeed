@@ -28,7 +28,7 @@ export class PostRepository extends Repository<Post> {
       .loadRelationCountAndMap("post.commentsCount", "post.comments")
       .addSelect([
         "post.id",
-        "post.content",
+        "post.text",
         "post.createdAt",
         "user.id",
         "user.name",
@@ -45,7 +45,7 @@ export class PostRepository extends Repository<Post> {
       .loadRelationCountAndMap("post.commentsCount", "post.comments")
       .select([
         "post.id",
-        "post.content",
+        "post.text",
         "post.createdAt",
         "user.id",
         "user.name",
@@ -54,7 +54,7 @@ export class PostRepository extends Repository<Post> {
       .where("user.id = :userId", { userId });
 
     if (filter.search) {
-      qb.andWhere("post.content LIKE :search", {
+      qb.andWhere("post.text LIKE :search", {
         search: `%${filter.search}%`
       });
     }

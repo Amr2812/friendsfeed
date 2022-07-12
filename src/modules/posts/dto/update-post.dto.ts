@@ -3,7 +3,7 @@ import { GetPostByIdResDto } from "./get-post-by-id.dto";
 
 export class UpdatePostDto {
   @Length(1, 3000)
-  content: string;
+  text: string;
 }
 
 export class UpdatePostResDto extends GetPostByIdResDto {}

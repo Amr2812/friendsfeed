@@ -10,7 +10,7 @@ export class GetPostByIdResDto {
   user: MiniUser;
 
   @IsNotEmpty()
-  content: string;
+  text: string;
 
   @IsNotEmpty()
   createdAt: Date;

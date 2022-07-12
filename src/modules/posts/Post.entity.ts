@@ -20,7 +20,7 @@ export class Post extends BaseEntity {
   user: User;
 
   @Column()
-  content: string;
+  text: string;
 
   @OneToMany(() => Like, like => like.post, {
     onUpdate: "CASCADE",
