@@ -6,7 +6,8 @@ import {
   Patch,
   Query,
   UploadedFile,
-  UseInterceptors
+  UseInterceptors,
+  Body
 } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
@@ -24,8 +25,10 @@ import {
   GetUserByIdResDto,
   GetUserPostsDto,
   GetUserPostsResDto,
+  UpdateProfileDto,
   UpdateProfilePictureDto,
-  UpdateProfilePictureResDto
+  UpdateProfilePictureResDto,
+  UpdateProfileResDto
 } from "./dto";
 import { PostsService } from "@modules/posts/posts.service";
 
@@ -69,6 +72,15 @@ export class UsersController {
     const { picture } = await this.usersService.updatePicture(userId, file);
 
     return { picture };
+  }
+
+  @Patch("/me")
+  @UseInterceptors(new ValidateResDtoInterceptor(UpdateProfileResDto))
+  updateProfile(
+    @GetUser("id") userId: number,
+    @Body() dto: UpdateProfileDto
+  ): Promise<UpdateProfileResDto> {
+    return this.usersService.updateProfile(userId, dto);
   }
 
   @Get("/:id/posts")

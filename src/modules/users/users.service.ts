@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CloudStorageService } from "@common/providers";
 import { UserRepository } from "./user.repository";
+import { UserData, UserSafeData } from "./types";
 
 @Injectable()
 export class UsersService {
@@ -38,5 +39,13 @@ export class UsersService {
     });
 
     return { picture: file.publicUrl };
+  }
+
+  updateProfile(userId: number, profile: Partial<UserData>) {
+    return this.userRepository.updateUser(
+      userId,
+      profile,
+      true
+    ) as Promise<UserSafeData>;
   }
 }

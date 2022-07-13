@@ -42,7 +42,7 @@ export class UserRepository extends Repository<User> {
     const res = await this.update(id, data);
 
     if (returnUser) {
-      return await this.findSafeUserById(id);
+      return this.findSafeUserById(id);
     }
 
     return res;

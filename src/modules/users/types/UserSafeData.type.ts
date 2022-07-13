@@ -3,5 +3,5 @@ import { User } from "../User.entity";
 
 export type UserSafeData = Omit<
   ExcludeMethods<User>,
-  "password" | "refreshToken"
+  "password" | "refreshToken" | "posts" | "comments" | "likes"
 >;
