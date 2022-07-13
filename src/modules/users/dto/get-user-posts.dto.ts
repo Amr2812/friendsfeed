@@ -11,19 +11,19 @@ export class GetUserPostsDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
-  search: string;
+  search?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
   @IsInt()
-  page: number;
+  page?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
   @IsInt()
-  limit: number;
+  limit?: number;
 }
 
 export class GetUserPostsResDto {

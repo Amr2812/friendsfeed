@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Param,
+  Put,
   Patch,
   Query,
   UploadedFile,
@@ -50,7 +51,7 @@ export class UsersController {
     return this.usersService.getUserById(id);
   }
 
-  @Patch("/me/picture")
+  @Put("/me/picture")
   @UseInterceptors(FileInterceptor("file"))
   @UseInterceptors(new ValidateResDtoInterceptor(UpdateProfilePictureResDto))
   @ApiConsumes("multipart/form-data")

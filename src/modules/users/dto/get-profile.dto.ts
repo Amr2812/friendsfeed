@@ -11,5 +11,5 @@ export class GetProfileResDto {
   email: string;
 
   @IsOptional()
-  picture: string;
+  picture?: string;
 }

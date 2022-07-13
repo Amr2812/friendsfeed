@@ -1,7 +1,7 @@
 import { Length } from "class-validator";
 import { GetCommentResDto } from "./get-comment.dto";
 
-export class CreatCommentDto {
+export class CreateCommentDto {
   @Length(1, 400)
   text: string;
 }

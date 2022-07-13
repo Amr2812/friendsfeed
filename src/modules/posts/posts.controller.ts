@@ -24,7 +24,7 @@ import {
   GetPostByIdResDto,
   UpdatePostDto,
   UpdatePostResDto,
-  CreatCommentDto,
+  CreateCommentDto,
   CreateCommentResDto,
   GetCommentResDto,
   GetPostCommentsDto,
@@ -90,7 +90,7 @@ export class PostsController {
   createComment(
     @Param("id") postId: number,
     @GetUser("id") userId: number,
-    @Body() createCommentDto: CreatCommentDto
+    @Body() createCommentDto: CreateCommentDto
   ): Promise<CreateCommentResDto> {
     return this.commentsService.createComment(userId, postId, createCommentDto);
   }

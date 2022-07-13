@@ -1,9 +1,7 @@
-import { Length } from "class-validator";
+import { PartialType } from "@nestjs/swagger";
+import { CreatePostDto } from "./create-post.dto";
 import { GetPostByIdResDto } from "./get-post-by-id.dto";
 
-export class UpdatePostDto {
-  @Length(1, 3000)
-  text: string;
-}
+export class UpdatePostDto extends PartialType(CreatePostDto) {}
 
 export class UpdatePostResDto extends GetPostByIdResDto {}
