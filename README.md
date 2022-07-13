@@ -30,6 +30,7 @@ The following features are available: (without details)
   * Get my profile
   * Get user profile
   * Update profile picture
+  * Update profile
 
 * Posts:
   * Create post
