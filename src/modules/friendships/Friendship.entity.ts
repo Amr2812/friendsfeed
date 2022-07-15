@@ -11,7 +11,7 @@ import {
 import { User } from "@modules/users/User.entity";
 import { FriendshipStatus } from "./FriendshipStatus.enum";
 
-@Entity()
+@Entity("friendships")
 @Index(["senderId", "receiverId"], { unique: true })
 export class Friendship extends BaseEntity {
   @PrimaryGeneratedColumn()

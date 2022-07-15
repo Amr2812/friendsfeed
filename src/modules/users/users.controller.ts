@@ -132,7 +132,7 @@ export class UsersController {
     @GetUser("id") senderId: number,
     @Param("id") receiverId: number
   ): Promise<void> {
-    await this.friendshipsService.addFriend(senderId, receiverId);
+    await this.friendshipsService.requestFriendship(senderId, receiverId);
   }
 
   @Post("/:id/friendships/accept")
@@ -150,7 +150,7 @@ export class UsersController {
     @GetUser("id") receiverId: number,
     @Param("id") senderId: number
   ): Promise<void> {
-    await this.friendshipsService.acceptFriend(receiverId, senderId);
+    await this.friendshipsService.acceptFriendship(receiverId, senderId);
   }
 
   @Post("/:id/friendships/reject")
@@ -169,7 +169,7 @@ export class UsersController {
     @GetUser("id") receiverId: number,
     @Param("id") senderId: number
   ): Promise<void> {
-    await this.friendshipsService.rejectFriend(receiverId, senderId);
+    await this.friendshipsService.rejectFriendship(receiverId, senderId);
   }
 
   @Get("/:id/friends")

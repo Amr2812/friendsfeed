@@ -99,7 +99,7 @@ export class FriendshipRepository extends Repository<Friendship> {
     });
   }
 
-  async findRequests(userId: number, filter: GetFriendRequestsDto) {
+  async findPendingFriendships(userId: number, filter: GetFriendRequestsDto) {
     const qb = this.createQueryBuilder("friendship")
       .leftJoinAndSelect("friendship.sender", "sender")
       .select([
@@ -140,7 +140,7 @@ export class FriendshipRepository extends Repository<Friendship> {
 
     const queryFriends = () =>
       this.query(
-        `
+      `
       SELECT * 
       FROM 
         (
@@ -149,7 +149,7 @@ export class FriendshipRepository extends Repository<Friendship> {
             "sender"."name" AS name, 
             "sender"."picture" AS picture 
           FROM 
-            "friendship" "friendship" 
+            "friendships" "friendship" 
             LEFT JOIN "users" "sender" ON "sender"."id" = "friendship"."senderId" 
           WHERE 
             "friendship"."receiverId" = $1 
@@ -162,7 +162,7 @@ export class FriendshipRepository extends Repository<Friendship> {
             "receiver"."name" AS name, 
             "receiver"."picture" AS picture 
           FROM 
-            "friendship" "friendship" 
+            "friendships" "friendship" 
             LEFT JOIN "users" "receiver" ON "receiver"."id" = "friendship"."receiverId" 
           WHERE 
             "friendship"."senderId" = $1 

@@ -55,7 +55,7 @@ export class FriendshipsService {
     return friendshipStatus;
   }
 
-  async addFriend(senderId: number, receiverId: number) {
+  async requestFriendship(senderId: number, receiverId: number) {
     const oppositeFriendship = await this.friendshipRepository.findFriendship(
       receiverId,
       senderId
@@ -100,10 +100,10 @@ export class FriendshipsService {
   }
 
   getFriendshipRequests(userId: number, filter: GetFriendRequestsDto) {
-    return this.friendshipRepository.findRequests(userId, filter);
+    return this.friendshipRepository.findPendingFriendships(userId, filter);
   }
 
-  async acceptFriend(receiverId: number, senderId: number) {
+  async acceptFriendship(receiverId: number, senderId: number) {
     const friendship = await this.friendshipRepository.findFriendship(
       senderId,
       receiverId,
@@ -129,7 +129,7 @@ export class FriendshipsService {
     );
   }
 
-  async rejectFriend(receiverId: number, senderId: number) {
+  async rejectFriendship(receiverId: number, senderId: number) {
     const friendship = await this.friendshipRepository.findFriendship(
       senderId,
       receiverId,
