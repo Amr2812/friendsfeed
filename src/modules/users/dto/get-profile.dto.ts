@@ -12,4 +12,7 @@ export class GetProfileResDto {
 
   @IsOptional()
   picture?: string;
+
+  @IsOptional()
+  bio?: string;
 }

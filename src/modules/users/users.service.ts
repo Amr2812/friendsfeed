@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CloudStorageService } from "@common/providers";
+import { FriendshipsService } from "@modules/friendships/friendships.service";
+import { FriendshipStatusResponse } from "@modules/friendships/FriendshipStatus.enum";
 import { UserRepository } from "./user.repository";
 import { UserData, UserSafeData } from "./types";
 
@@ -9,17 +14,37 @@ import { UserData, UserSafeData } from "./types";
 export class UsersService {
   constructor(
     @InjectRepository(UserRepository)
-    private userRepository: UserRepository,
-    private storageService: CloudStorageService,
-    private readonly configService: ConfigService
+    private readonly userRepository: UserRepository,
+    private readonly storageService: CloudStorageService,
+    private readonly configService: ConfigService,
+    private readonly friendshipsService: FriendshipsService
   ) {}
 
-  async getUserById(id: number) {
-    const user = await this.userRepository.findSafeUserById(id);
+  async getUserById(id: number, currentUserId?: number) {
+    let friendshipStatus: FriendshipStatusResponse =
+      FriendshipStatusResponse.NOT_FRIENDS;
 
+    if (currentUserId && currentUserId != id) {
+      const [user, friendshipStatusResponse] = await Promise.all([
+        this.userRepository.findSafeUserById(id),
+        this.friendshipsService.getFriendshipStatus(id, currentUserId)
+      ]);
+      if (!user) throw new NotFoundException("User not found");
+
+      friendshipStatus = friendshipStatusResponse;
+      return {
+        ...user,
+        friendshipStatus
+      };
+    }
+
+    const user = await this.userRepository.findSafeUserById(id);
     if (!user) throw new NotFoundException("User not found");
 
-    return user;
+    return {
+      ...user,
+      friendshipStatus
+    };
   }
 
   async updatePicture(userId: number, file: { publicUrl: string }) {

@@ -1,7 +1,7 @@
 import { ExcludeMethods } from "@common/types";
 import { User } from "../User.entity";
 
-export type UserSafeData = Omit<
+export type UserSafeData = Pick<
   ExcludeMethods<User>,
-  "password" | "refreshToken" | "posts" | "comments" | "likes"
+  "id" | "name" | "email" | "picture" | "bio"
 >;

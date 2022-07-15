@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { MiniUser } from "@common/types";
+import { MiniUserDto } from "@common/types";
 
 export class GetCommentResDto {
   @IsNotEmpty()
@@ -12,7 +12,7 @@ export class GetCommentResDto {
   createdAt: Date;
 
   @IsNotEmpty()
-  user: MiniUser;
+  user: MiniUserDto;
 
   @IsNotEmpty()
   postId: number;

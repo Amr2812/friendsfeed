@@ -28,9 +28,16 @@ The following features are available: (without details)
 
 * Users:
   * Get my profile
-  * Get user profile
+  * Get user profile with friendship status
   * Update profile picture
   * Update profile
+
+* Friendships:
+  * Friendship request
+  * Accept friendship request
+  * Reject friendship request
+  * Get/Filter/Search friendship requests
+  * Get/Filter/Search friends
 
 * Posts:
   * Create post

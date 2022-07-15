@@ -54,7 +54,7 @@ export class PostRepository extends Repository<Post> {
       .where("user.id = :userId", { userId });
 
     if (filter.search) {
-      qb.andWhere("post.text LIKE :search", {
+      qb.andWhere("post.text ILIKE :search", {
         search: `%${filter.search}%`
       });
     }

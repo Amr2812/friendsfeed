@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, ValidateNested } from "class-validator";
-import { MiniUser } from "@common/types";
+import { MiniUserDto } from "@common/types";
 
 export class GetPostByIdResDto {
   @IsNotEmpty()
@@ -7,7 +7,7 @@ export class GetPostByIdResDto {
 
   @IsNotEmpty()
   @ValidateNested()
-  user: MiniUser;
+  user: MiniUserDto;
 
   @IsNotEmpty()
   text: string;

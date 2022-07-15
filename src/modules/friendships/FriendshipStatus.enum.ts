@@ -1,0 +1,13 @@
+export enum FriendshipStatus {
+  PENDING,
+  ACCEPTED,
+  REJECTED
+}
+
+export enum FriendshipStatusResponse {
+  NOT_FRIENDS = "NOT_FRIENDS",
+  FRIENDS = "FRIENDS",
+  PENDING_SENT_BY_YOU = "PENDING_SENT_BY_YOU",
+  PENDING_SENT_BY_USER = "PENDING_SENT_BY_USER",
+  REJECTED_BY_USER = "REJECTED_BY_USER"
+}

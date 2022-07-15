@@ -1,25 +1,30 @@
+import { IsNotEmpty, IsOptional, IsInt, ValidateNested } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsOptional, ValidateNested } from "class-validator";
 import { MiniUserDto } from "@common/types";
 
-export class GetPostLikesDto {
+export class GetUserFriendsDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
-  @IsInt()
-  page: number;
+  search?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsNotEmpty()
   @IsInt()
-  limit: number;
+  page?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNotEmpty()
+  @IsInt()
+  limit?: number;
 }
 
-export class GetPostLikesResDto {
+export class GetUserFriendsResDto {
   @IsNotEmpty()
   @ValidateNested({ each: true })
-  likes: { user: MiniUserDto }[];
+  friends: MiniUserDto[];
 
   @IsNotEmpty()
   count: number;

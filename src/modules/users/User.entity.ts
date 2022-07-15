@@ -11,6 +11,7 @@ import * as bcrypt from "bcrypt";
 import { Post } from "@modules/posts/Post.entity";
 import { Comment } from "@modules/comments/Comment.entity";
 import { Like } from "@modules/likes/Like.entity";
+import { Friendship } from "@modules/friendships/Friendship.entity";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -54,6 +55,18 @@ export class User extends BaseEntity {
     onDelete: "CASCADE"
   })
   likes: Like[];
+
+  @OneToMany(() => Friendship, friendship => friendship.sender, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  senderFriendships: Friendship[];
+
+  @OneToMany(() => Friendship, friendship => friendship.receiver, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  receiverFriendships: Friendship[];
 
   @BeforeInsert()
   async hashPassword() {

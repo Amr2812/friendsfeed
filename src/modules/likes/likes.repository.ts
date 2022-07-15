@@ -1,6 +1,6 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { EntityRepository, In, Repository } from "typeorm";
-import { MiniUser } from "@common/types";
+import { MiniUserDto } from "@common/types";
 import { GetPostLikesDto } from "@modules/posts/dto";
 import { LikeData } from "./types";
 import { PostData } from "@modules/posts/types";
@@ -42,7 +42,7 @@ export class LikeRepository extends Repository<Like> {
     const [likes, count] = await qb.getManyAndCount();
 
     return {
-      likes: likes as { user: MiniUser }[],
+      likes: likes as { user: MiniUserDto }[],
       count,
       page,
       limit
