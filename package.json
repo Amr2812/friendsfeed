@@ -1,7 +1,7 @@
 {
-  "name": "easy-connect-nestjs",
+  "name": "friendsfeed",
   "version": "0.0.1",
-  "description": "Easy Connect is a social network Rest API built with NestJs",
+  "description": "A social network for friends to see their life updates only to support friends communication without influencers, creators, pages, etc...",
   "author": "Amr2812",
   "scripts": {
     "prebuild": "rimraf dist",

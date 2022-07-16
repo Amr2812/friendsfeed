@@ -1,6 +1,6 @@
-# Easy Connect Rest API
+# Friendsfeed
 
-Easy Connect is a social network I built to help people connect with each other.
+A social network for friends to see their life updates only to support friends communication without influencers, creators, pages, etc...
 
 ## Technologies
 
