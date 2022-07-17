@@ -1,2 +1,2 @@
 web: npm run start:prod
-release: cd core && npm i --save-dev ts-node && npm run migration:run
+release: cd core && npm i ts-node && npm run migration:run
