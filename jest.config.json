@@ -2,11 +2,6 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "src",
   "testRegex": ".*\\.spec\\.ts$",
-  "moduleNameMapper": {
-    "^src/(.*)$": "<rootDir>/$1",
-    "^@common/(.*)$": "<rootDir>/common/$1",
-    "^@modules/(.*)$": "<rootDir>/modules/$1"
-  },
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
@@ -30,6 +25,6 @@
     ".interceptor.ts",
     ".pipe.ts"
   ],
-  "coverageDirectory": "../coverage",
+  "coverageDirectory": "./coverage",
   "testEnvironment": "node"
 }
