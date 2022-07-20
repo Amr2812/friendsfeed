@@ -55,9 +55,9 @@ async function bootstrap() {
   app.use(helmet());
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle("Easy Connect API - NestJs")
+    .setTitle("FriendsFeed API - NestJs")
     .setDescription(
-      "Easy Connect is a social network Rest API built with NestJs"
+      "FriendsFeed is a social network Rest API built with NestJs"
     )
     .setVersion("1.0")
     .build();
