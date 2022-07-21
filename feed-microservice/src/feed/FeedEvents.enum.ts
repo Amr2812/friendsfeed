@@ -1,4 +1,4 @@
 export enum FeedEvents {
-  PostPublished = "post-published",
-  GetUserFeed = "get-user-feed"
+  POST_PUBLISHED = "post-published",
+  GET_USER_FEED = "get-user-feed"
 }

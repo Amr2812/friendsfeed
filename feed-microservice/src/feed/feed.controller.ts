@@ -14,7 +14,7 @@ import { FeedEvents } from "./FeedEvents.enum";
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
-  @EventPattern(FeedEvents.PostPublished)
+  @EventPattern(FeedEvents.POST_PUBLISHED)
   async onPostPublished(
     @Payload() data: PostPublishedDto,
     @Ctx() ctx: RmqContext
@@ -33,7 +33,7 @@ export class FeedController {
     }
   }
 
-  @MessagePattern(FeedEvents.GetUserFeed)
+  @MessagePattern(FeedEvents.GET_USER_FEED)
   getUserFeed(@Payload() data: GetUserFeedDto): Promise<GetUserFeedResDto> {
     return this.feedService.getUserFeed(data.userId, data.limit);
   }
