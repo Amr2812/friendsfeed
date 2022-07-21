@@ -14,9 +14,7 @@ async function bootstrap() {
     {
       transport: Transport.RMQ,
       options: {
-        urls: [
-          `amqp://${rabbitmqOptions.user}:${rabbitmqOptions.password}@${rabbitmqOptions.host}:${rabbitmqOptions.port}`
-        ],
+        urls: [rabbitmqConfig().uri],
         queue: rabbitmqOptions.queue,
         noAck: false,
         queueOptions: { durable: true }
@@ -28,8 +26,6 @@ async function bootstrap() {
   app.useGlobalFilters(new RmqAckBadReqExceptionsFilter());
 
   await app.listen();
-  logger.log(
-    `Microservice is listening on rabbitmq port ${rabbitmqOptions.port}`
-  );
+  logger.log("Microservice is listening on rabbitmq transport...");
 }
 bootstrap();

@@ -17,9 +17,7 @@ import { FeedService } from "./feed.service";
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
-            urls: [
-              `amqp://${config.user}:${config.password}@${config.host}:${config.port}`
-            ],
+            urls: [config.uri],
             queue: config.queue,
             queueOptions: { durable: true },
             noAck: false
