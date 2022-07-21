@@ -1,6 +1,6 @@
 import { IsInt, IsNotEmpty } from "class-validator";
 
-export class V1PostPublishedDto {
+export class PostPublishedDto {
   @IsInt()
   @IsNotEmpty()
   userId: number;

@@ -8,4 +8,8 @@ export class FeedService {
   addPostToUsersFeeds(postId: number, userId: number) {
     return this.feedRepository.prependPostToUsersFeeds(postId, userId);
   }
+
+  getUserFeed(userId: number, limit: number) {
+    return this.feedRepository.findUserFeedIds(userId, limit);
+  }
 }
