@@ -11,8 +11,10 @@ export class FeedRepository {
     this.redis = this.redisProvider.getRedis();
   }
 
-  prependPostToUsersFeeds(postId: number, userId: number) {
-    return this.redis.lpush(`user:${userId}:feed`, postId);
+  prependPostToUsersFeeds(postId: number, userIds: number[]) {
+    return this.redis.pipeline(
+      userIds.map(userId => ["lpush", `user:${userId}:feed`, postId])
+    ).exec();
   }
 
   async findUserFeedIds(

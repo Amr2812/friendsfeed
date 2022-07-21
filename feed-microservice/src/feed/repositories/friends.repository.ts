@@ -10,16 +10,13 @@ export class FriendsRepository {
 
   async findUserFriendsIds(userId: number): Promise<number[]> {
     const query = `
-      SELECT id 
+      SELECT * 
       FROM 
         (
           SELECT 
-            "sender"."id" AS id, 
-            "sender"."name" AS name, 
-            "sender"."picture" AS picture 
+            "senderId" AS id 
           FROM 
             "friendships" "friendship" 
-            LEFT JOIN "users" "sender" ON "sender"."id" = "friendship"."senderId" 
           WHERE 
             "friendship"."receiverId" = $1 
             AND "friendship"."status" = $2
@@ -27,12 +24,9 @@ export class FriendsRepository {
       UNION 
         (
           SELECT 
-            "receiver"."id" AS id, 
-            "receiver"."name" AS name, 
-            "receiver"."picture" AS picture 
+            "receiverId" AS id 
           FROM 
             "friendships" "friendship" 
-            LEFT JOIN "users" "receiver" ON "receiver"."id" = "friendship"."receiverId" 
           WHERE 
             "friendship"."senderId" = $1 
             AND "friendship"."status" = $2
