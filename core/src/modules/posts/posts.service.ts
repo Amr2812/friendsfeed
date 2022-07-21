@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LikesService } from "@modules/likes/likes.service";
+import { FeedService } from "@modules/feed/feed.service";
 import { GetUserPostsDto } from "../users/dto";
 import { PostRepository } from "./posts.repository";
 import { PostData } from "./types";
@@ -10,11 +11,14 @@ export class PostsService {
   constructor(
     @InjectRepository(PostRepository)
     private readonly postRepository: PostRepository,
-    private readonly likesService: LikesService
+    private readonly likesService: LikesService,
+    private readonly feedService: FeedService
   ) {}
 
-  createPost(userId: number, post: Partial<PostData>) {
-    return this.postRepository.createPost(userId, post);
+  async createPost(userId: number, post: Partial<PostData>) {
+    const createdPost = await this.postRepository.createPost(userId, post);
+    this.feedService.emitPostPublished(createdPost.id, userId);
+    return createdPost;
   }
 
   async getPost(postId: number, userId: number) {

@@ -12,6 +12,8 @@ import { FriendshipsService } from "@modules/friendships/friendships.service";
 import { UserRepository } from "./user.repository";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
+import { FeedModule } from "@modules/feed/feed.module";
+import { FeedService } from "@modules/feed/feed.service";
 
 @Module({
   imports: [
@@ -38,7 +40,8 @@ import { UsersService } from "./users.service";
         })
       }),
       inject: [ConfigService]
-    })
+    }),
+    FeedModule
   ],
   controllers: [UsersController],
   providers: [

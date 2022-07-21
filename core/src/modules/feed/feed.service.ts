@@ -3,7 +3,7 @@ import { ClientProxy } from "@nestjs/microservices";
 import { InjectRepository } from "@nestjs/typeorm";
 import { PostRepository } from "@modules/posts/posts.repository";
 import { FeedEvents } from "./FeedEvents.enum";
-import { GetUserFeed, GetUserFeedRes } from "./interfaces";
+import { GetUserFeed, GetUserFeedRes, PostPublished } from "./interfaces";
 
 @Injectable()
 export class FeedService {
@@ -23,5 +23,10 @@ export class FeedService {
           return resolve(this.postRepository.findPostsByIds(posts));
         });
     });
+  }
+
+  emitPostPublished(postId: number, userId: number) {
+    const payload: PostPublished = { postId, userId };
+    return this.feedClient.emit(FeedEvents.POST_PUBLISHED, payload);
   }
 }

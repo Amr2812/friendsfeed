@@ -22,13 +22,14 @@ import { FeedService } from "./feed.service";
             ],
             queue: config.queue,
             queueOptions: { durable: true },
-            noAck: false,
+            noAck: false
           }
         });
       },
       inject: [ConfigService]
     },
     FeedService
-  ]
+  ],
+  exports: ["FEED_SERVICE", FeedService]
 })
 export class FeedModule {}
