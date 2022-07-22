@@ -32,6 +32,7 @@ import {
   GetUserByIdResDto,
   GetUserPostsDto,
   GetUserPostsResDto,
+  updateFcmTokenDto,
   UpdateProfileDto,
   UpdateProfilePictureDto,
   UpdateProfilePictureResDto,
@@ -98,6 +99,18 @@ export class UsersController {
     @Body() dto: UpdateProfileDto
   ): Promise<UpdateProfileResDto> {
     return this.usersService.updateProfile(userId, dto);
+  }
+
+  @Patch("/me/fcm-token")
+  async updateFcmToken(
+    @GetUser("id") userId: number,
+    @Body() dto: updateFcmTokenDto
+  ): Promise<void> {
+    await this.usersService.updateFcmToken(
+      userId,
+      dto.newToken,
+      dto.oldToken || null
+    );
   }
 
   @Get("/:id/posts")

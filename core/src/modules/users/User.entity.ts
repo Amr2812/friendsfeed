@@ -38,6 +38,10 @@ export class User extends BaseEntity {
   @Column({ nullable: true, select: false })
   refreshToken: string;
 
+  @ApiHideProperty()
+  @Column("text", { array: true, nullable: true, select: false })
+  fcmTokens: string[];
+
   @OneToMany(() => Post, post => post.user, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE"

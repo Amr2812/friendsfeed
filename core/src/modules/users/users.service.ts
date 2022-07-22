@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CloudStorageService } from "@common/providers";
@@ -72,5 +69,18 @@ export class UsersService {
       profile,
       true
     ) as Promise<UserSafeData>;
+  }
+
+  async updateFcmToken(userId: number, newToken: string, oldToken?: string) {
+    const user = await this.userRepository.findUserById<{
+      fcmTokens: string[];
+    }>(userId, ["fcmTokens"]);
+
+    if (oldToken && user.fcmTokens.includes(oldToken)) {
+      user.fcmTokens = user.fcmTokens.filter(token => token !== oldToken);
+    }
+
+    user.fcmTokens.push(newToken);
+    return await this.userRepository.updateUser(userId, { fcmTokens: user.fcmTokens });
   }
 }

@@ -70,4 +70,4 @@ The following features are available: (without details)
 
 ## Feed Microservice
 
-It is a microservice that stores each user's feed. It communicates with the Postgresql database and the Redis database. It communicates through RabbitMQ. It acts as a worker that listens to posts creation events and updates the feed of the friends of the user. It uses Request-Response pattern with rabbitmq to send user's feed to the monolith web server.
+It is a microservice that stores each user's feed. It communicates with the Postgresql database and the Redis database. It communicates through RabbitMQ. It listens to posts creation events and updates the feed of the friends of the user. It uses Request-Response pattern with rabbitmq to send user's feed to the monolith web server.
