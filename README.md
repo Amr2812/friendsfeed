@@ -9,8 +9,14 @@ A social network for friends to see their life updates only to support friends c
 * Nest.js
 * PostgreSQL
 * TypeORM
+* Redis
+* RabbitMQ
 * JWT Authentication
 * Swagger
+
+## System Architecture
+
+[system-arch.png](https://github.com/friendsfeed/raw/master/.github/system-arch.png)
 
 ## Docs
 
@@ -24,7 +30,7 @@ The following features are available: (without details)
   * Sign up
   * Login
   * Logout
-  * Refresh tokens
+  * JWT Refresh tokens
 
 * Users:
   * Get my profile
@@ -57,3 +63,11 @@ The following features are available: (without details)
   * Like a post
   * Unlike a post
   * Get likes of a post
+
+* Feed Microservice (posts of my friends):
+  * Store each user's feed in redis
+  * Get feed of a user (autoscroll)
+
+## Feed Microservice
+
+It is a microservice that stores each user's feed. It communicates with the Postgresql database and the Redis database. It communicates through RabbitMQ. It acts as a worker that listens to posts creation events and updates the feed of the friends of the user. It uses Request-Response pattern with rabbitmq to send user's feed to the monolith web server.
