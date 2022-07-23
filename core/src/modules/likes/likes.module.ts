@@ -5,6 +5,7 @@ import { LikesService } from "./likes.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([LikeRepository])],
-  providers: [LikesService]
+  providers: [LikesService],
+  exports: [LikesService]
 })
 export class LikesModule {}

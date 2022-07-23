@@ -27,6 +27,7 @@ import { PostsService } from "./posts.service";
     PostsService,
     CommentsService,
     LikesService
-  ]
+  ],
+  exports: [PostsService]
 })
 export class PostsModule {}

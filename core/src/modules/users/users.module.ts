@@ -3,13 +3,11 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CloudStorageService, GCStorage } from "@common/providers";
-import { PostsService } from "@modules/posts/posts.service";
-import { LikesService } from "@modules/likes/likes.service";
 import { FriendshipRepository } from "@modules/friendships/friendship.repository";
-import { FriendshipsService } from "@modules/friendships/friendships.service";
 import { FeedModule } from "@modules/feed/feed.module";
 import { PostsModule } from "@modules/posts/posts.module";
 import { LikesModule } from "@modules/likes/likes.module";
+import { FriendshipsModule } from "@modules/friendships/friendships.module";
 import { PostRepository } from "@modules/posts/posts.repository";
 import { LikeRepository } from "@modules/likes/likes.repository";
 import { UserRepository } from "./user.repository";
@@ -44,15 +42,14 @@ import { UsersService } from "./users.service";
     }),
     FeedModule,
     PostsModule,
-    LikesModule
+    LikesModule,
+    FriendshipsModule
   ],
   controllers: [UsersController],
   providers: [
     UsersService,
-    CloudStorageService,
-    PostsService,
-    LikesService,
-    FriendshipsService
-  ]
+    CloudStorageService
+  ],
+  exports: [UsersService]
 })
 export class UsersModule {}
