@@ -1,0 +1,133 @@
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DeepPartial } from "typeorm";
+import * as firebase from "firebase-admin";
+import { MessagingPayload } from "firebase-admin/lib/messaging/messaging-api";
+import { NotificationType } from "./NotificationType.enum";
+import { NotificationRepository } from "./notitification.repository";
+import { NotificationData } from "./types";
+
+@Injectable()
+export class NotificationsService {
+  private readonly logger = new Logger("NotificationsService");
+  private readonly fcm: firebase.messaging.Messaging;
+
+  constructor(
+    @InjectRepository(NotificationRepository)
+    private readonly notificationRepository: NotificationRepository,
+    private readonly configService: ConfigService
+  ) {
+    this.fcm = firebase
+      .initializeApp({
+        credential: firebase.credential.cert(
+          JSON.parse(this.configService.get("FCM_KEY"))
+        )
+      })
+      .messaging();
+  }
+
+  async send(
+    tokenOrTokens: string | string[],
+    type: NotificationType,
+    data: {
+      userId: number;
+      fromUserId: number;
+      postId?: number;
+      commentId?: number;
+      likeId?: number;
+    }
+  ): Promise<void> {
+    const notification = await this.notificationRepository.createNotification(
+      data.userId,
+      data.fromUserId,
+      { type },
+      data.postId
+    );
+
+    const payload = this.getPayload(type, notification);
+
+    this.fcm.sendToDevice(tokenOrTokens, payload).catch(error => {
+      this.logger.error(error);
+    });
+  }
+
+  protected getPayload(
+    type: NotificationType,
+    notification: DeepPartial<NotificationData>
+  ): MessagingPayload {
+    let payload: MessagingPayload;
+    switch (type) {
+      case NotificationType.FRIEND_REQUEST:
+        payload = {
+          notification: {
+            title: "Friend request",
+            body: `${notification.fromUser.name} wants to be your friend!`,
+            icon: notification.fromUser.picture
+          },
+          data: {
+            type: NotificationType.FRIEND_REQUEST,
+            fromUserId: String(notification.fromUser.id),
+            fromUserName: notification.fromUser.name,
+            fromUserPicture: notification.fromUser.picture
+          }
+        };
+        break;
+
+      case NotificationType.FRIEND_ACCEPTED:
+        payload = {
+          notification: {
+            title: "Friend request accepted",
+            body: `${notification.fromUser.name} is now your friend!`,
+            icon: notification.fromUser.picture
+          },
+          data: {
+            type: NotificationType.FRIEND_ACCEPTED,
+            fromUserId: String(notification.fromUser.id),
+            fromUserName: notification.fromUser.name,
+            fromUserPicture: notification.fromUser.picture
+          }
+        };
+        break;
+
+      case NotificationType.POST_LIKE:
+        payload = {
+          notification: {
+            title: "New like",
+            body: `${notification.fromUser.name} liked your post!`,
+            icon: notification.fromUser.picture
+          },
+          data: {
+            type: NotificationType.POST_LIKE,
+            postId: String(notification.post.id),
+            fromUserId: String(notification.fromUser.id),
+            fromUserName: notification.fromUser.name,
+            fromUserPicture: notification.fromUser.picture
+          }
+        };
+        break;
+
+      case NotificationType.POST_COMMENT:
+        payload = {
+          notification: {
+            title: "New comment",
+            body: `${notification.fromUser.name} commented on your post!`,
+            icon: notification.fromUser.picture
+          },
+          data: {
+            type: NotificationType.POST_COMMENT,
+            postId: String(notification.post.id),
+            fromUserId: String(notification.fromUser.id),
+            fromUserName: notification.fromUser.name,
+            fromUserPicture: notification.fromUser.picture
+          }
+        };
+        break;
+
+      default:
+        throw new Error("Unknown notification type");
+    }
+
+    return payload;
+  }
+}

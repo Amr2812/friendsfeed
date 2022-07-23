@@ -5,12 +5,13 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtGuard } from "@common/guards";
 import { CommentsModule } from "@modules/comments/comments.module";
 import { FriendshipsModule } from "@modules/friendships/friendships.module";
+import { AuthModule } from "@modules/auth/auth.module";
+import { UsersModule } from "@modules/users/users.module";
+import { PostsModule } from "@modules/posts/posts.module";
+import { FeedModule } from "@modules/feed/feed.module";
+import { NotificationsModule } from "@modules/notifications/notifications.module";
 import { jwtConfig, rabbitmqConfig, storageConfig } from "./config";
 import ormConfig from "../ormconfig";
-import { AuthModule } from "./modules/auth/auth.module";
-import { UsersModule } from "./modules/users/users.module";
-import { PostsModule } from "./modules/posts/posts.module";
-import { FeedModule } from "@modules/feed/feed.module";
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { FeedModule } from "@modules/feed/feed.module";
     PostsModule,
     CommentsModule,
     FriendshipsModule,
-    FeedModule
+    FeedModule,
+    NotificationsModule
   ],
   providers: [
     {

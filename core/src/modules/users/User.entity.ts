@@ -12,6 +12,7 @@ import { Post } from "@modules/posts/Post.entity";
 import { Comment } from "@modules/comments/Comment.entity";
 import { Like } from "@modules/likes/Like.entity";
 import { Friendship } from "@modules/friendships/Friendship.entity";
+import { Notification } from "@modules/notifications/Notification.entity";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -71,6 +72,12 @@ export class User extends BaseEntity {
     onDelete: "CASCADE"
   })
   receiverFriendships: Friendship[];
+
+  @OneToMany(() => Notification, notification => notification.user, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  notifications: Notification[];
 
   @BeforeInsert()
   async hashPassword() {
