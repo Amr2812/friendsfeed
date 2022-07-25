@@ -48,7 +48,7 @@ export class NotificationsService {
     const payload = this.getPayload(type, notification);
 
     this.fcm.sendToDevice(tokenOrTokens, payload).catch(error => {
-      this.logger.error(error);
+      this.logger.error(error.message, { error, payload });
     });
   }
 
@@ -62,14 +62,12 @@ export class NotificationsService {
         payload = {
           notification: {
             title: "Friend request",
-            body: `${notification.fromUser.name} wants to be your friend!`,
-            icon: notification.fromUser.picture
+            body: `${notification.fromUser.name} wants to be your friend!`
           },
           data: {
             type: NotificationType.FRIEND_REQUEST,
             fromUserId: String(notification.fromUser.id),
-            fromUserName: notification.fromUser.name,
-            fromUserPicture: notification.fromUser.picture
+            fromUserName: notification.fromUser.name
           }
         };
         break;
@@ -78,14 +76,12 @@ export class NotificationsService {
         payload = {
           notification: {
             title: "Friend request accepted",
-            body: `${notification.fromUser.name} is now your friend!`,
-            icon: notification.fromUser.picture
+            body: `${notification.fromUser.name} is now your friend!`
           },
           data: {
             type: NotificationType.FRIEND_ACCEPTED,
             fromUserId: String(notification.fromUser.id),
-            fromUserName: notification.fromUser.name,
-            fromUserPicture: notification.fromUser.picture
+            fromUserName: notification.fromUser.name
           }
         };
         break;
@@ -94,15 +90,12 @@ export class NotificationsService {
         payload = {
           notification: {
             title: "New like",
-            body: `${notification.fromUser.name} liked your post!`,
-            icon: notification.fromUser.picture
+            body: `${notification.fromUser.name} liked your post!`
           },
           data: {
             type: NotificationType.POST_LIKE,
-            postId: String(notification.post.id),
             fromUserId: String(notification.fromUser.id),
-            fromUserName: notification.fromUser.name,
-            fromUserPicture: notification.fromUser.picture
+            fromUserName: notification.fromUser.name
           }
         };
         break;
@@ -111,21 +104,35 @@ export class NotificationsService {
         payload = {
           notification: {
             title: "New comment",
-            body: `${notification.fromUser.name} commented on your post!`,
-            icon: notification.fromUser.picture
+            body: `${notification.fromUser.name} commented on your post!`
           },
           data: {
             type: NotificationType.POST_COMMENT,
-            postId: String(notification.post.id),
             fromUserId: String(notification.fromUser.id),
-            fromUserName: notification.fromUser.name,
-            fromUserPicture: notification.fromUser.picture
+            fromUserName: notification.fromUser.name
           }
         };
         break;
 
       default:
         throw new Error("Unknown notification type");
+    }
+
+    if (notification.fromUser.picture) {
+      payload.notification.icon = notification.fromUser.picture;
+      payload.data.fromUserPicture = notification.fromUser.picture;
+    }
+
+    if (notification.postId) {
+      payload.data.postId = String(notification.postId);
+    }
+
+    if (notification.commentId) {
+      payload.data.commentId = String(notification.commentId);
+    }
+
+    if (notification.likeId) {
+      payload.data.likeId = String(notification.likeId);
     }
 
     return payload;

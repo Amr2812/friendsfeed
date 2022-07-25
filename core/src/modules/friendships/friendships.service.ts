@@ -1,22 +1,28 @@
-import { GetUserFriendsDto } from "@modules/users/dto/get-user-friends.dto";
 import {
   ConflictException,
   Injectable,
   NotFoundException
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GetFriendRequestsDto } from "./dto";
+import { NotificationsService } from "@modules/notifications/notifications.service";
+import { GetUserFriendsDto } from "@modules/users/dto/get-user-friends.dto";
 import { FriendshipRepository } from "./friendship.repository";
+import { GetFriendRequestsDto } from "./dto";
 import {
   FriendshipStatus,
   FriendshipStatusResponse
 } from "./FriendshipStatus.enum";
+import { NotificationType } from "@modules/notifications/NotificationType.enum";
+import { UserRepository } from "@modules/users/user.repository";
 
 @Injectable()
 export class FriendshipsService {
   constructor(
     @InjectRepository(FriendshipRepository)
-    private readonly friendshipRepository: FriendshipRepository
+    private readonly friendshipRepository: FriendshipRepository,
+    @InjectRepository(UserRepository)
+    private readonly userRepository: UserRepository,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   async getFriendshipStatus(id: number, currentUserId: number) {
@@ -71,6 +77,21 @@ export class FriendshipsService {
       const createdFriendship =
         await this.friendshipRepository.createFriendship(senderId, receiverId);
 
+      const { fcmTokens } = await this.userRepository.findUserById<{
+        fcmTokens: string[];
+      }>(receiverId, ["fcmTokens"]);
+
+      if (fcmTokens) {
+        this.notificationsService.send(
+          fcmTokens,
+          NotificationType.FRIEND_REQUEST,
+          {
+            userId: receiverId,
+            fromUserId: senderId
+          }
+        );
+      }
+
       return createdFriendship;
     } catch (error) {
       if (error instanceof ConflictException) {
@@ -120,13 +141,28 @@ export class FriendshipsService {
       throw new ConflictException("Friendship request was already rejected");
     }
 
-    return await this.friendshipRepository.updateFriendship(
+    await this.friendshipRepository.updateFriendship(
       senderId,
       receiverId,
       {
         status: FriendshipStatus.ACCEPTED
       }
     );
+
+    const { fcmTokens } = await this.userRepository.findUserById<{
+      fcmTokens: string[];
+    }>(senderId, ["fcmTokens"]);
+
+    if (fcmTokens) {
+      this.notificationsService.send(
+        fcmTokens,
+        NotificationType.FRIEND_ACCEPTED,
+        {
+          userId: senderId,
+          fromUserId: receiverId
+        }
+      );
+    }
   }
 
   async rejectFriendship(receiverId: number, senderId: number) {
@@ -145,7 +181,7 @@ export class FriendshipsService {
       throw new ConflictException("Friendship request was already rejected");
     }
 
-    return await this.friendshipRepository.updateFriendship(
+    return this.friendshipRepository.updateFriendship(
       senderId,
       receiverId,
       {

@@ -41,9 +41,9 @@ export class NotificationRepository extends Repository<Notification> {
         "notification.id",
         "notification.type",
         "notification.userId",
-        "notification.fromUser.id",
-        "notification.fromUser.name",
-        "notification.fromUser.picture",
+        "fromUser.id",
+        "fromUser.name",
+        "fromUser.picture",
         "notification.postId",
         "notification.commentId",
         "notification.likeId"

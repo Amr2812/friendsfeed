@@ -72,15 +72,26 @@ export class UsersService {
   }
 
   async updateFcmToken(userId: number, newToken: string, oldToken?: string) {
+    console.log("updateFcmToken", userId, newToken, oldToken);
     const user = await this.userRepository.findUserById<{
+      id: number;
       fcmTokens: string[];
-    }>(userId, ["fcmTokens"]);
+    }>(userId, ["id", "fcmTokens"]);
 
-    if (oldToken && user.fcmTokens.includes(oldToken)) {
+    if (!user) throw new NotFoundException("User not found");
+
+    if (oldToken && user.fcmTokens?.includes(oldToken)) {
       user.fcmTokens = user.fcmTokens.filter(token => token !== oldToken);
     }
 
-    user.fcmTokens.push(newToken);
-    return await this.userRepository.updateUser(userId, { fcmTokens: user.fcmTokens });
+    if (!user.fcmTokens?.length) {
+      user.fcmTokens = [newToken];
+    } else {
+      user.fcmTokens.push(newToken);
+    }
+
+    return this.userRepository.updateUser(userId, {
+      fcmTokens: user.fcmTokens
+    });
   }
 }

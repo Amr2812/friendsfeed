@@ -10,7 +10,8 @@ import {
   Body,
   Post,
   HttpCode,
-  HttpStatus
+  HttpStatus,
+  ParseIntPipe
 } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
@@ -103,7 +104,7 @@ export class UsersController {
 
   @Patch("/me/fcm-token")
   async updateFcmToken(
-    @GetUser("id") userId: number,
+    @GetUser("id", ParseIntPipe) userId: number,
     @Body() dto: updateFcmTokenDto
   ): Promise<void> {
     await this.usersService.updateFcmToken(

@@ -40,18 +40,18 @@ export class Notification {
   @ManyToOne(() => Post)
   post: Post;
 
-  @Column()
+  @Column({ nullable: true })
   postId: number;
 
   @ManyToOne(() => Comment)
   comment: Comment;
 
-  @Column()
+  @Column({ nullable: true })
   commentId: number;
 
   @ManyToOne(() => Like)
   like: Like;
 
-  @Column()
+  @Column({ nullable: true })
   likeId: number;
 }
