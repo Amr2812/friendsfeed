@@ -11,12 +11,14 @@ A social network for friends to see their life updates only to support friends c
 * TypeORM
 * Redis
 * RabbitMQ
+* Google Cloud Storage
+* Firebase Cloud Messaging (Notifications)
 * JWT Authentication
 * Swagger
 
 ## System Architecture
 
-[system-arch.png](https://github.com/friendsfeed/raw/master/.github/system-arch.png)
+![system-arch.png](.github/system-arch.png)
 
 ## Docs
 
@@ -63,6 +65,12 @@ The following features are available: (without details)
   * Like a post
   * Unlike a post
   * Get likes of a post
+
+* Notifications:
+  * Get notifications and mark them as read
+  * Send notification on a post like or comment
+  * Send notification on a friendship request
+  * Send notification on a friendship request acception
 
 * Feed Microservice (posts of my friends):
   * Store each user's feed in redis

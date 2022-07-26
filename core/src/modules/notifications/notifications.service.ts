@@ -7,6 +7,7 @@ import { MessagingPayload } from "firebase-admin/lib/messaging/messaging-api";
 import { NotificationType } from "./NotificationType.enum";
 import { NotificationRepository } from "./notitification.repository";
 import { NotificationData } from "./types";
+import { GetNotificationsQueryDto } from "./dto";
 
 @Injectable()
 export class NotificationsService {
@@ -50,6 +51,10 @@ export class NotificationsService {
     this.fcm.sendToDevice(tokenOrTokens, payload).catch(error => {
       this.logger.error(error.message, { error, payload });
     });
+  }
+
+  getNotifications(userId: number, query: GetNotificationsQueryDto) {
+    return this.notificationRepository.findNotificationsByUserId(userId, query);
   }
 
   protected getPayload(
