@@ -33,6 +33,10 @@ export class PostsService {
     return post;
   }
 
+  async getPostAuthor(postId: number) {
+    return this.postRepository.findPostAuthor(postId);
+  }
+
   async getUserPosts(
     userId: number,
     filter: GetUserPostsDto,

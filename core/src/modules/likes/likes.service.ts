@@ -1,14 +1,38 @@
 import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { PostRepository } from "@modules/posts/posts.repository";
+import { NotificationsService } from "@modules/notifications/notifications.service";
 import { GetPostLikesDto } from "@modules/posts/dto";
+import { NotificationType } from "@modules/notifications/NotificationType.enum";
 import { PostData } from "@modules/posts/types";
 import { LikeRepository } from "./likes.repository";
 
 @Injectable()
 export class LikesService {
-  constructor(private readonly likesRepository: LikeRepository) {}
+  constructor(
+    @InjectRepository(LikeRepository)
+    private readonly likesRepository: LikeRepository,
+    @InjectRepository(PostRepository)
+    private readonly postsRepository: PostRepository,
+    private readonly notificationsService: NotificationsService
+  ) {}
 
-  likePost(postId: number, userId: number) {
-    return this.likesRepository.createLike(postId, userId);
+  async likePost(postId: number, userId: number) {
+    await this.likesRepository.createLike(postId, userId);
+
+    const postAuthor = await this.postsRepository.findPostAuthor(postId);
+
+    if (postAuthor.user.id !== userId) {
+      this.notificationsService.send(
+        postAuthor.user.fcmTokens,
+        NotificationType.POST_LIKE,
+        {
+          userId: postAuthor.user.id,
+          fromUserId: userId,
+          postId
+        }
+      );
+    }
   }
 
   getPostLikes(postId: number, filter: GetPostLikesDto) {

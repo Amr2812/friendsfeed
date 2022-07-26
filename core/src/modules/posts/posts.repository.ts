@@ -1,5 +1,6 @@
 import { NotFoundException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
+import { UserSafeData } from "@modules/users/types";
 import { Post } from "./Post.entity";
 import { GetUserPostsDto } from "../users/dto";
 import { PostData } from "./types";
@@ -36,6 +37,20 @@ export class PostRepository extends Repository<Post> {
       ])
       .where("post.id = :postId", { postId })
       .getOne();
+  }
+
+  async findPostAuthor(
+    postId: number
+  ): Promise<{ id: number; user: { id: number; fcmTokens: string[] } }> {
+    const post = await this.createQueryBuilder("post")
+      .leftJoinAndSelect("post.user", "user")
+      .select(["post.id", "user.id", "user.fcmTokens"])
+      .where("post.id = :postId", { postId })
+      .getOne();
+
+    if (!post) throw new NotFoundException("Post not found");
+
+    return post;
   }
 
   async findUserPosts(userId: number, filter: GetUserPostsDto) {
