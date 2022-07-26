@@ -58,6 +58,7 @@ export class NotificationRepository extends Repository<Notification> {
       .select([
         "notification.id",
         "notification.type",
+        "notification.read",
         "notification.createdAt",
         "fromUser.id",
         "fromUser.name",
@@ -71,6 +72,15 @@ export class NotificationRepository extends Repository<Notification> {
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
+
+    if (notifications.length) {
+      this.createQueryBuilder("notification")
+        .update(Notification)
+        .set({ read: true })
+        .where("userId = :userId", { userId })
+        .andWhere("read = false")
+        .execute();
+    }
 
     notifications = notifications.map(notification => {
       if (notification.postId === null) {

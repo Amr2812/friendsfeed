@@ -3,6 +3,7 @@ import { NotificationType } from "../NotificationType.enum";
 export type NotificationData = {
   id: number;
   type: NotificationType;
+  read: boolean;
   fromUser: {
     id: number;
     name: string;
