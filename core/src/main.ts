@@ -42,7 +42,8 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new UnknownExceptionsFilter(httpAdapter));
   app.enableCors({
-    origin: configService.get("CORS_ORIGIN")
+    origin: JSON.parse(configService.get("CORS_ORIGINS")),
+    credentials: true
   });
 
   app.use(
