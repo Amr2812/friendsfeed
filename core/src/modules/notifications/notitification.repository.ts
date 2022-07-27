@@ -103,4 +103,14 @@ export class NotificationRepository extends Repository<Notification> {
       page
     };
   }
+
+  findUnreadNotificationsCount(userId: number): Promise<number> {
+    return this.createQueryBuilder("notification")
+      .select(["notification.userId", "notification.read"])
+      .where({
+        userId,
+        read: false
+      })
+      .getCount()
+  }
 }

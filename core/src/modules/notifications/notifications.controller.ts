@@ -2,7 +2,11 @@ import { GetUser } from "@common/decorators";
 import { ValidateResDtoInterceptor } from "@common/interceptors/validate-res-dto.interceptor";
 import { Controller, Get, Query, UseInterceptors } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { GetNotificationsQueryDto, GetNotificationsResDto } from "./dto";
+import {
+  GetNotificationsQueryDto,
+  GetNotificationsResDto,
+  GetUnreadNotificationsCountResDto
+} from "./dto";
 import { NotificationsService } from "./notifications.service";
 
 @ApiTags("Notifications")
@@ -17,5 +21,13 @@ export class NotificationsController {
     @Query() query: GetNotificationsQueryDto
   ) {
     return this.notificationsService.getNotifications(userId, query);
+  }
+
+  @Get("unread-count")
+  @UseInterceptors(
+    new ValidateResDtoInterceptor(GetUnreadNotificationsCountResDto)
+  )
+  getUnreadNotificationsCount(@GetUser("id") userId: number) {
+    return this.notificationsService.getUnreadNotificationsCount(userId);
   }
 }

@@ -57,6 +57,13 @@ export class NotificationsService {
     return this.notificationRepository.findNotificationsByUserId(userId, query);
   }
 
+  async getUnreadNotificationsCount(userId: number) {
+    const count =
+      await this.notificationRepository.findUnreadNotificationsCount(userId);
+    
+    return { count };
+  }
+
   protected getPayload(
     type: NotificationType,
     notification: DeepPartial<NotificationData>
