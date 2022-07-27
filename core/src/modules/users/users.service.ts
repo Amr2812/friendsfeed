@@ -38,10 +38,7 @@ export class UsersService {
     const user = await this.userRepository.findSafeUserById(id);
     if (!user) throw new NotFoundException("User not found");
 
-    return {
-      ...user,
-      friendshipStatus
-    };
+    return user;
   }
 
   async updatePicture(userId: number, file: { publicUrl: string }) {
