@@ -67,6 +67,7 @@ The following features are available: (without details)
   * Get likes of a post
 
 * Notifications:
+  * Get unread notifications count
   * Get notifications and mark them as read
   * Send notification on a post like or comment
   * Send notification on a friendship request
