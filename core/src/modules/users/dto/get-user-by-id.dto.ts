@@ -19,5 +19,6 @@ export class GetUserByIdResDto {
 
   @IsNotEmpty()
   @IsEnum(FriendshipStatusResponse)
-  friendshipStatus: FriendshipStatusResponse;
+  @IsOptional()
+  friendshipStatus?: FriendshipStatusResponse;
 }
