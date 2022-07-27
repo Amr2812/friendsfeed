@@ -47,13 +47,11 @@ export class AuthController {
     res.cookie("refresh_token", tokens.refreshToken, {
       maxAge: this.configService.get<number>("jwt.refreshToken.expiresIn"),
       httpOnly: true,
-      secure: true,
       sameSite: "strict"
     });
     res.cookie("access_token", tokens.accessToken, {
       maxAge: this.configService.get<number>("jwt.accessToken.expiresIn"),
       httpOnly: true,
-      secure: true,
       sameSite: "strict"
     });
 
@@ -75,13 +73,11 @@ export class AuthController {
     res.cookie("refresh_token", tokens.refreshToken, {
       maxAge: this.configService.get<number>("jwt.refreshToken.expiresIn"),
       httpOnly: true,
-      secure: true,
       sameSite: "strict"
     });
     res.cookie("access_token", tokens.accessToken, {
       maxAge: this.configService.get<number>("jwt.accessToken.expiresIn"),
       httpOnly: true,
-      secure: true,
       sameSite: "strict"
     });
 
@@ -118,13 +114,11 @@ export class AuthController {
     res.cookie("refresh_token", refreshToken, {
       maxAge: this.configService.get<number>("jwt.refreshToken.expiresIn"),
       httpOnly: true,
-      secure: true,
       sameSite: "strict"
     });
     res.cookie("access_token", accessToken, {
       maxAge: this.configService.get<number>("jwt.accessToken.expiresIn"),
       httpOnly: true,
-      secure: true,
       sameSite: "strict"
     });
 
