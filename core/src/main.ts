@@ -47,7 +47,6 @@ async function bootstrap() {
 
   app.use(
     cookieParser(configService.get("COOKIE_SECRET"), {
-      secure: true,
       httpOnly: true,
       signed: true
     } as any)
