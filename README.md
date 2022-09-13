@@ -22,7 +22,7 @@ A social network for friends to see their life updates only to support friends c
 
 ## Docs
 
-Swagger [https://friends-feed.herokuapp.com/api/v1.0/docs](https://friends-feed.herokuapp.com/api/v1.0/docs)
+Swagger [https://friendsfeed.up.railway.app/api/v1.0/docs](https://friendsfeed.up.railway.app/api/v1.0/docs)
 
 ## Features
 
