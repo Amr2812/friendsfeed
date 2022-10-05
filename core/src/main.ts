@@ -5,6 +5,7 @@ import {
   VersioningType,
   Logger
 } from "@nestjs/common";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as cookieParser from "cookie-parser";
@@ -54,6 +55,16 @@ async function bootstrap() {
   );
   app.use(helmet());
 
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: configService.get("rabbitmq.uri"),
+      queue: configService.get("rabbitmq.friendshipService.queue"),
+      queueOptions: { durable: true },
+      noAck: false
+    },
+  });
+
   const swaggerConfig = new DocumentBuilder()
     .setTitle("FriendsFeed API - NestJs")
     .setDescription(
@@ -65,6 +76,8 @@ async function bootstrap() {
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup(`api/v${defaultVersion}/docs`, app, swaggerDocument);
   logger.log(`Swagger docs is available at api/v${defaultVersion}/docs`);
+
+  await app.startAllMicroservices();
 
   const port = configService.get("PORT");
   await app.listen(port);

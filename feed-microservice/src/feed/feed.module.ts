@@ -1,26 +1,19 @@
 import { Module } from "@nestjs/common";
-import { RedisProvider, PGProvider } from "src/common/providers";
+import { RedisProvider } from "src/common/providers";
+import { FriendshipsModule } from "src/friendships/friendships.module";
+import { FriendshipsService } from "src/friendships/friendships.service";
 import { FeedController } from "./feed.controller";
-import { FeedRepository, FriendsRepository } from "./repositories";
+import { FeedRepository } from "./feed.repository";
 import { FeedService } from "./feed.service";
-import { ConfigService } from "@nestjs/config";
 
 @Module({
+  imports: [FriendshipsModule],
   controllers: [FeedController],
   providers: [
     FeedService,
     RedisProvider,
-    {
-      provide: "PG",
-      useFactory: async (configService: ConfigService) => {
-        const pg = new PGProvider(configService);
-        await pg.init();
-        return pg.getPG();
-      },
-      inject: [ConfigService]
-    },
     FeedRepository,
-    FriendsRepository
+    FriendshipsService
   ]
 })
 export class FeedModule {}

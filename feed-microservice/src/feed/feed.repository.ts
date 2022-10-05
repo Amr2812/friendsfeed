@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import Redis from "ioredis";
 import { RedisProvider } from "src/common/providers";
-import { GetUserFeedResDto } from "../dto";
+import { GetUserFeedResDto } from "./dto";
 
 @Injectable()
 export class FeedRepository {

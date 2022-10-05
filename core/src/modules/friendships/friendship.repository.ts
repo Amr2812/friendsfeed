@@ -200,4 +200,32 @@ export class FriendshipRepository extends Repository<Friendship> {
       limit
     };
   }
+
+  async findFriendsIds(userId: number): Promise<number[]> {
+    const query = `
+      SELECT * 
+      FROM 
+        (
+          SELECT 
+            "senderId" AS id 
+          FROM 
+            "friendships" "friendship" 
+          WHERE 
+            "friendship"."receiverId" = $1 
+            AND "friendship"."status" = $2
+        ) AS query1 
+      UNION 
+        (
+          SELECT 
+            "receiverId" AS id 
+          FROM 
+            "friendships" "friendship" 
+          WHERE 
+            "friendship"."senderId" = $1 
+            AND "friendship"."status" = $2
+        )
+    `;
+    const result = await this.query(query, [userId, FriendshipStatus.ACCEPTED]);
+    return result.map((row: { id: number }) => row.id);
+  }
 }

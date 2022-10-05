@@ -69,7 +69,6 @@ export class UsersService {
   }
 
   async updateFcmToken(userId: number, newToken: string, oldToken?: string) {
-    console.log("updateFcmToken", userId, newToken, oldToken);
     const user = await this.userRepository.findUserById<{
       id: number;
       fcmTokens: string[];

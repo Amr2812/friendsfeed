@@ -1,24 +1,19 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ClientProxyFactory, Transport } from "@nestjs/microservices";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { PostRepository } from "@modules/posts/posts.repository";
-import { FeedController } from "./feed.controller";
-import { FeedService } from "./feed.service";
+import { FriendshipsService } from "./friendships.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PostRepository])],
-  controllers: [FeedController],
   providers: [
     {
-      provide: "FEED_SERVICE",
+      provide: "FRIENDSHIPS_SERVICE",
       useFactory: (configService: ConfigService) => {
         const config = configService.get("rabbitmq");
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
             urls: [config.uri],
-            queue: config.feedService.queue,
+            queue: config.friendshipsService.queue,
             queueOptions: { durable: true },
             noAck: false
           }
@@ -26,8 +21,8 @@ import { FeedService } from "./feed.service";
       },
       inject: [ConfigService]
     },
-    FeedService
+    FriendshipsService
   ],
-  exports: ["FEED_SERVICE", FeedService]
+  exports: ["FRIENDSHIPS_SERVICE", FriendshipsService]
 })
-export class FeedModule {}
+export class FriendshipsModule {}

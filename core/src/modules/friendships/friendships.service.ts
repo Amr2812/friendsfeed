@@ -193,4 +193,8 @@ export class FriendshipsService {
   getFriends(userId: number, filter: GetUserFriendsDto) {
     return this.friendshipRepository.findFriends(userId, filter);
   }
+
+  getFriendsIds(userId: number) {
+    return this.friendshipRepository.findFriendsIds(userId);
+  }
 }

@@ -1,9 +1,15 @@
 import { Controller, Get, Query, UseInterceptors } from "@nestjs/common";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 import { ApiTags } from "@nestjs/swagger";
 import { ValidateResDtoInterceptor } from "@common/interceptors/validate-res-dto.interceptor";
 import { GetUser } from "@common/decorators";
+import { FriendshipEvents } from "./FriendshipEvents.enum";
 import { FriendshipsService } from "./friendships.service";
-import { GetFriendRequestsDto, GetFriendRequestsResDto } from "./dto";
+import {
+  GetFriendRequestsDto,
+  GetFriendRequestsResDto,
+  GetFriendsIdsDto
+} from "./dto";
 
 @ApiTags("Friendships")
 @Controller("friendships")
@@ -20,5 +26,10 @@ export class FriendshipsController {
       userId,
       getFriendRequestsDto
     );
+  }
+
+  @MessagePattern(FriendshipEvents.GET_FRIENDS_IDS)
+  getFriendsIds(@Payload() data: GetFriendsIdsDto): Promise<number[]> {
+    return this.friendshipsService.getFriendsIds(data.userId);
   }
 }
