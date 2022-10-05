@@ -22,7 +22,8 @@ A social network for friends to see their life updates only to support friends c
 
 ## Docs
 
-Swagger [https://friendsfeed.up.railway.app/api/v1.0/docs](https://friendsfeed.up.railway.app/api/v1.0/docs)
+Swagger [https://friendsfeed.onrender.com/api/v1.0/docs](https://friendsfeed.onrender.com/api/v1.0/docs)
+> Note: This might take about 30 seconds to start
 
 ## Features
 
@@ -79,4 +80,4 @@ The following features are available: (without details)
 
 ## Feed Microservice
 
-It is a microservice that stores each user's feed. It communicates with the Postgresql database and the Redis database. It communicates through RabbitMQ. It listens to posts creation events and updates the feed of the friends of the user. It uses Request-Response pattern with rabbitmq to send user's feed to the monolith web server.
+It is a microservice that stores each user's feed. It communicates with the core monolith and the Redis database. It communicates through RabbitMQ. It listens to posts creation events and updates the feed of the friends of the user. It uses Request-Response pattern with rabbitmq to send user's feed to the monolith web server.
