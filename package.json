@@ -4,6 +4,7 @@
   "description": "A social network for friends to see their life updates only to support friends communication without influencers, creators, pages, etc...",
   "author": "Amr2812",
   "scripts": {
-    "preinstall": "cd core"
+    "preinstall": "cd core",
+    "start":  "cd core"
   }
 }
