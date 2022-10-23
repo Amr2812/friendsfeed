@@ -4,6 +4,6 @@
   "description": "A social network for friends to see their life updates only to support friends communication without influencers, creators, pages, etc...",
   "author": "Amr2812",
   "scripts": {
-    "start": "ls && cd ./core && npm ci --include=dev && npm run build && npm run start:prod"
+    "preinstall": "cd ./core && npm ci --include=dev && npm run build && npm run start:prod"
   }
 }
