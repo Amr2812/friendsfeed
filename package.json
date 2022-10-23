@@ -1,7 +1,7 @@
 {
   "name": "friendsfeed",
   "version": "0.0.1",
-  "description": "A social network for friends to see their life updates only to support friends communication without influencers, creators, pages, etc...",
+  "description": "A social network for friends to see life updates only to support friends communication without influencers, creators, pages, etc...",
   "author": "Amr2812",
   "main": "./core/package.json",
   "scripts": {
