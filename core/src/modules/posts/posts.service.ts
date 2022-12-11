@@ -44,7 +44,7 @@ export class PostsService {
   ) {
     const records = await this.postRepository.findUserPosts(userId, filter);
 
-    if (currentUserId) {
+    if (currentUserId && records.posts.length) {
       records.posts = await this.likesService.checkIfUserLikedPosts(
         records.posts,
         currentUserId

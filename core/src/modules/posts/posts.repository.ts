@@ -54,34 +54,76 @@ export class PostRepository extends Repository<Post> {
   }
 
   async findUserPosts(userId: number, filter: GetUserPostsDto) {
-    const qb = this.createQueryBuilder("post")
-      .leftJoinAndSelect("post.user", "user")
-      .loadRelationCountAndMap("post.likesCount", "post.likes")
-      .loadRelationCountAndMap("post.commentsCount", "post.comments")
-      .select([
-        "post.id",
-        "post.text",
-        "post.createdAt",
-        "user.id",
-        "user.name",
-        "user.picture"
-      ])
-      .where("user.id = :userId", { userId });
-
-    if (filter.search) {
-      qb.andWhere("post.text ILIKE :search", {
-        search: `%${filter.search}%`
-      });
-    }
-
     const page = filter.page || 1;
     const limit = filter.limit || 10;
-    qb.skip((page - 1) * limit).take(limit);
 
-    const [posts, count] = await qb.getManyAndCount();
+    const query = `
+      SELECT
+        post.id,
+        post.text,
+        post."createdAt",
+        "user".id AS "userId",
+        "user".name AS "userName",
+        "user".picture AS "userPicture",
+        (SELECT COUNT(*) AS "likesCount" FROM "posts_likes" WHERE posts_likes."postId" = post.id),
+        (SELECT COUNT(*) AS "commentsCount" FROM "comments" WHERE comments."postId" = post.id)
+      FROM posts post
+      LEFT JOIN "users" "user" ON "user".id = post."userId"
+      WHERE "user".id = $1
+      GROUP BY post.id, "user".id
+      ORDER BY post."createdAt" DESC
+      LIMIT $2 OFFSET $3;
+    `;
+
+    const queryWithSearch = `
+      SELECT
+        post.id,
+        post.text,
+        post."createdAt",
+        "user".id AS "userId",
+        "user".name AS "userName",
+        "user".picture AS "userPicture",
+        (SELECT COUNT(*) AS "likesCount" FROM "posts_likes" WHERE posts_likes."postId" = post.id),
+        (SELECT COUNT(*) AS "commentsCount" FROM "comments" WHERE comments."postId" = post.id)
+      FROM posts post
+      LEFT JOIN "users" "user" ON "user".id = post."userId"
+      WHERE "user".id = $1 AND post.text ILIKE $4
+      GROUP BY post.id, "user".id
+      ORDER BY post."createdAt" DESC
+      LIMIT $2 OFFSET $3;
+    `;
+
+    const [rawPosts, count] = await Promise.all([
+      filter.search
+        ? this.query(queryWithSearch, [
+            userId,
+            limit,
+            (page - 1) * limit,
+            `%${filter.search}%`
+          ])
+        : this.query(query, [userId, limit, (page - 1) * limit]),
+      this.count({
+        user: {
+          id: userId
+        }
+      })
+    ]);
+
+    const posts: PostData[] = rawPosts.map((post: any) => ({
+      id: post.id,
+      text: post.text,
+      createdAt: post.createdAt,
+      user: {
+        id: post.userId,
+        name: post.userName,
+        picture: post.userPicture
+      },
+      likesCount: parseInt(post.likesCount),
+      commentsCount: parseInt(post.commentsCount)
+    }));
 
     return {
-      posts: posts as PostData[],
+      posts,
       count,
       page,
       limit

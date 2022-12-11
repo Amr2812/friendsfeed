@@ -2,7 +2,6 @@ import { ConflictException, NotFoundException } from "@nestjs/common";
 import { EntityRepository, In, Repository } from "typeorm";
 import { MiniUserDto } from "@common/types";
 import { GetPostLikesDto } from "@modules/posts/dto";
-import { LikeData } from "./types";
 import { PostData } from "@modules/posts/types";
 import { Like } from "./Like.entity";
 
