@@ -25,11 +25,6 @@ export class PostsService {
     const post = await this.postRepository.findPostById(postId, userId);
     if (!post) throw new NotFoundException("Post not found");
 
-    if (userId) {
-      post.likeId = post.likes[0]?.id;
-      post.likes = undefined;
-    }
-
     return post;
   }
 

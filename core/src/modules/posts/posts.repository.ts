@@ -1,6 +1,5 @@
 import { NotFoundException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
-import { UserSafeData } from "@modules/users/types";
 import { Post } from "./Post.entity";
 import { GetUserPostsDto } from "../users/dto";
 import { PostData } from "./types";
@@ -12,7 +11,7 @@ export class PostRepository extends Repository<Post> {
     return this.findPostById(createdPost.id, userId);
   }
 
-  findPostById(postId: number, userId: number): Promise<PostData> {
+  async findPostById(postId: number, userId: number): Promise<PostData> {
     const qb = this.createQueryBuilder("post").leftJoinAndSelect(
       "post.user",
       "user"
@@ -24,9 +23,7 @@ export class PostRepository extends Repository<Post> {
       }).select(["like.id"]);
     }
 
-    return qb
-      .loadRelationCountAndMap("post.likesCount", "post.likes")
-      .loadRelationCountAndMap("post.commentsCount", "post.comments")
+    const rawPost = await qb
       .addSelect([
         "post.id",
         "post.text",
@@ -35,8 +32,36 @@ export class PostRepository extends Repository<Post> {
         "user.name",
         "user.picture"
       ])
+      .addSelect(subQuery =>
+        subQuery
+          .select("COUNT(*)", "comments_count")
+          .from("comments", "c")
+          .where("c.postId = post.id")
+      )
+      .addSelect(subQuery =>
+        subQuery
+          .select("COUNT(*)", "likes_count")
+          .from("posts_likes", "l")
+          .where("l.postId = post.id")
+      )
       .where("post.id = :postId", { postId })
-      .getOne();
+      .getRawOne();
+      
+    const post = {
+      id: rawPost.post_id,
+      text: rawPost.post_text,
+      createdAt: rawPost.post_createdAt,
+      user: {
+        id: rawPost.user_id,
+        name: rawPost.user_name,
+        picture: rawPost.user_picture
+      },
+      likesCount: rawPost.likes_count,
+      commentsCount: rawPost.comments_count,
+      likeId: rawPost.like_id
+    } as PostData;
+
+    return post;
   }
 
   async findPostAuthor(
@@ -57,51 +82,32 @@ export class PostRepository extends Repository<Post> {
     const page = filter.page || 1;
     const limit = filter.limit || 10;
 
-    const query = `
-      SELECT
-        post.id,
-        post.text,
-        post."createdAt",
-        "user".id AS "userId",
-        "user".name AS "userName",
-        "user".picture AS "userPicture",
-        (SELECT COUNT(*) AS "likesCount" FROM "posts_likes" WHERE posts_likes."postId" = post.id),
-        (SELECT COUNT(*) AS "commentsCount" FROM "comments" WHERE comments."postId" = post.id)
-      FROM posts post
-      LEFT JOIN "users" "user" ON "user".id = post."userId"
-      WHERE "user".id = $1
-      GROUP BY post.id, "user".id
-      ORDER BY post."createdAt" DESC
-      LIMIT $2 OFFSET $3;
-    `;
+    const qb = this.createQueryBuilder("post")
+      .select([
+        "post.id",
+        "post.text",
+        "post.createdAt",
+        "user.id",
+        "user.name",
+        "user.picture",
+        "COUNT(likes.id) as likes_count",
+        "COUNT(comments.id) as comments_count"
+      ])
+      .leftJoin("post.user", "user")
+      .leftJoin("post.likes", "likes")
+      .leftJoin("post.comments", "comments")
+      .where("user.id = :userId", { userId })
+      .groupBy("post.id, user.id")
+      .orderBy("post.createdAt", "DESC")
+      .limit(limit)
+      .offset((page - 1) * limit);
 
-    const queryWithSearch = `
-      SELECT
-        post.id,
-        post.text,
-        post."createdAt",
-        "user".id AS "userId",
-        "user".name AS "userName",
-        "user".picture AS "userPicture",
-        (SELECT COUNT(*) AS "likesCount" FROM "posts_likes" WHERE posts_likes."postId" = post.id),
-        (SELECT COUNT(*) AS "commentsCount" FROM "comments" WHERE comments."postId" = post.id)
-      FROM posts post
-      LEFT JOIN "users" "user" ON "user".id = post."userId"
-      WHERE "user".id = $1 AND post.text ILIKE $4
-      GROUP BY post.id, "user".id
-      ORDER BY post."createdAt" DESC
-      LIMIT $2 OFFSET $3;
-    `;
+    if (filter.search) {
+      qb.andWhere("post.text ILIKE :text", { text: `%${filter.search}%` });
+    }
 
     const [rawPosts, count] = await Promise.all([
-      filter.search
-        ? this.query(queryWithSearch, [
-            userId,
-            limit,
-            (page - 1) * limit,
-            `%${filter.search}%`
-          ])
-        : this.query(query, [userId, limit, (page - 1) * limit]),
+      qb.getRawMany(),
       this.count({
         user: {
           id: userId
@@ -109,18 +115,18 @@ export class PostRepository extends Repository<Post> {
       })
     ]);
 
-    const posts: PostData[] = rawPosts.map((post: any) => ({
-      id: post.id,
-      text: post.text,
-      createdAt: post.createdAt,
+    const posts = rawPosts.map(rawPost => ({
+      id: rawPost.post_id,
+      text: rawPost.post_text,
+      createdAt: rawPost.post_createdAt,
       user: {
-        id: post.userId,
-        name: post.userName,
-        picture: post.userPicture
+        id: rawPost.user_id,
+        name: rawPost.user_name,
+        picture: rawPost.user_picture
       },
-      likesCount: parseInt(post.likesCount),
-      commentsCount: parseInt(post.commentsCount)
-    }));
+      likesCount: rawPost.likes_count,
+      commentsCount: rawPost.comments_count
+    })) as PostData[];
 
     return {
       posts,
@@ -129,7 +135,7 @@ export class PostRepository extends Repository<Post> {
       limit
     };
   }
-
+  // TODO: FIX THIS SHIT
   findPostsByIds(postsIds: number[]): Promise<PostData[]> {
     return this.createQueryBuilder("post")
       .leftJoinAndSelect("post.user", "user")
