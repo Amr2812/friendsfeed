@@ -2,8 +2,6 @@
 
 A social network for friends to see their life updates only to support friends communication without influencers, creators, pages, etc...
 
-> Note: this project needs a lot of refactoring and some tools will be replaced when I have some free time
-
 ## Technologies
 
 * Node.js
@@ -11,6 +9,7 @@ A social network for friends to see their life updates only to support friends c
 * Nest.js
 * PostgreSQL
 * TypeORM
+* Kysely (query builder)
 * Redis
 * RabbitMQ
 * Google Cloud Storage
@@ -25,7 +24,7 @@ A social network for friends to see their life updates only to support friends c
 ## Docs
 
 Swagger [https://friendsfeed.onrender.com/api/v1.0/docs](https://friendsfeed.onrender.com/api/v1.0/docs)
-> Note: This might take about 30 seconds to start
+> Note: This might take up to 30 seconds to start
 
 ## Features
 
@@ -76,10 +75,10 @@ The following features are available: (without details)
   * Send notification on a friendship request
   * Send notification on a friendship request acception
 
-* Feed Microservice (posts of my friends):
-  * Store each user's feed in redis
+* Feed (posts of my friends):
+  * Store each user's feed using a distributed worker
   * Get feed of a user (autoscroll)
 
-## Feed Microservice
+## Feed Worker
 
-It is a microservice that stores each user's feed. It communicates with the core monolith and the Redis database. It communicates through RabbitMQ. It listens to posts creation events and updates the feed of the friends of the user. It uses Request-Response pattern with rabbitmq to send user's feed to the monolith web server.
+It is a distributed worker (nestjs microservice) that stores each user's feed in the PostgreSQL database using Kysely query builder. It communicates with the core monolith using RabbitMQ. It listens to posts creation events and updates the feed of the friends of the user. 
