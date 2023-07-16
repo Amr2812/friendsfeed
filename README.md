@@ -2,6 +2,8 @@
 
 A social network for friends to see their life updates only to support friends communication without influencers, creators, pages, etc...
 
+> Note: this project needs a lot of refactoring and some tools will be replaced when I have some free time
+
 ## Technologies
 
 * Node.js
