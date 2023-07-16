@@ -9,7 +9,7 @@ const config: PostgresConnectionOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: ["dist/src/**/*.entity{.ts,.js}"],
-  migrations: [__dirname + "/migrations/*{.ts,.js}"],
+  migrations: ["dist/src/database/migrations/*{.ts,.js}"],
   cli: {
     migrationsDir: "src/database/migrations"
   },

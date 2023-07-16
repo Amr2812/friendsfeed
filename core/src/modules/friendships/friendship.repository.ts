@@ -225,6 +225,7 @@ export class FriendshipRepository extends Repository<Friendship> {
             AND "friendship"."status" = $2
         )
     `;
+
     const result = await this.query(query, [userId, FriendshipStatus.ACCEPTED]);
     return result.map((row: { id: number }) => row.id);
   }

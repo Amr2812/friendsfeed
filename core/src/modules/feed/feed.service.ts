@@ -1,32 +1,36 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { InjectRepository } from "@nestjs/typeorm";
-import { PostRepository } from "@modules/posts/posts.repository";
+import { FriendshipsService } from "@modules/friendships/friendships.service";
+import { FeedRepository } from "./feed.repository";
 import { FeedEvents } from "./FeedEvents.enum";
-import { GetUserFeed, GetUserFeedRes, PostPublished } from "./interfaces";
+import { PostPublished } from "./interfaces";
+import { LikeRepository } from "@modules/likes/likes.repository";
 
 @Injectable()
 export class FeedService {
   constructor(
-    @Inject("FEED_SERVICE") private readonly feedClient: ClientProxy,
-    @InjectRepository(PostRepository)
-    private readonly postRepository: PostRepository
+    @Inject("FEED_WORKER") private readonly feedClient: ClientProxy,
+    private readonly friendshipsService: FriendshipsService,
+    @InjectRepository(FeedRepository)
+    private readonly feedRepository: FeedRepository,
+    @InjectRepository(LikeRepository)
+    private readonly likesRepository: LikeRepository
   ) {}
 
-  getFeed(userId: number, limit: number) {
-    const payload: GetUserFeed = { userId, limit };
-    return new Promise(resolve => {
-      this.feedClient
-        .send<GetUserFeedRes>(FeedEvents.GET_USER_FEED, payload)
-        .subscribe(({ posts }) => {
-          if (!posts.length) return resolve([]);
-          return resolve(this.postRepository.findPostsByIds(posts));
-        });
-    });
+  async getFeed(userId: number, limit: number) {
+    let { posts } = await this.feedRepository.findThenDeleteFeed(userId, limit);
+    posts = await this.likesRepository.checkIfUserLikedPosts(posts, userId);
+
+    return { posts };
   }
 
-  emitPostPublished(postId: number, userId: number) {
-    const payload: PostPublished = { postId, userId };
+  async emitPostPublished(postId: number, userId: number) {
+    const friendsIds = await this.friendshipsService.getFriendsIds(userId);
+
+    if (friendsIds.length === 0) return;
+
+    const payload: PostPublished = { postId, friendsIds };
     return this.feedClient.emit(FeedEvents.POST_PUBLISHED, payload);
   }
 }

@@ -9,7 +9,7 @@ export class GetUserFeedDto {
   @IsPositive()
   @IsOptional()
   limit: number;
-} 
+}
 
 export class GetUserFeedResDto {
   @IsInt()

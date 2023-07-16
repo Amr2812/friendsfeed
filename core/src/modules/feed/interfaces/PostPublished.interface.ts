@@ -1,4 +1,4 @@
 export interface PostPublished {
-  userId: number;
   postId: number;
+  friendsIds: number[];
 }

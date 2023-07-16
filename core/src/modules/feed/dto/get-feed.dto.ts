@@ -1,3 +1,4 @@
+import { GetPostByIdResDto } from "@modules/posts/dto";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
@@ -5,10 +6,11 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPositive
+  IsPositive,
+  ValidateNested
 } from "class-validator";
 
-export class GetFeedQueryDto {
+export class GetFeedDto {
   @ApiPropertyOptional({ type: Number, default: 10 })
   @IsInt()
   @IsPositive()
@@ -19,12 +21,7 @@ export class GetFeedQueryDto {
 }
 
 export class GetFeedResDto {
-  @IsInt()
-  @IsPositive()
-  @IsNotEmpty()
-  userId: number;
-
   @IsArray()
-  @IsNotEmpty()
-  feed: number[];
+  @ValidateNested({ each: true })
+  posts: GetPostByIdResDto[];
 }

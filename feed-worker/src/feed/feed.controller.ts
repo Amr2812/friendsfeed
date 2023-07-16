@@ -21,7 +21,7 @@ export class FeedController {
   ) {
     const success = await this.feedService.addPostToUsersFeeds(
       data.postId,
-      data.userId
+      data.friendsIds
     );
 
     const channel = ctx.getChannelRef();
@@ -31,10 +31,5 @@ export class FeedController {
     } else {
       channel.nack(ctx.getMessage());
     }
-  }
-
-  @MessagePattern(FeedEvents.GET_USER_FEED)
-  getUserFeed(@Payload() data: GetUserFeedDto): Promise<GetUserFeedResDto> {
-    return this.feedService.getUserFeed(data.userId, data.limit);
   }
 }

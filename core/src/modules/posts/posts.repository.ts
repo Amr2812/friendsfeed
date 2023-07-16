@@ -135,23 +135,6 @@ export class PostRepository extends Repository<Post> {
       limit
     };
   }
-  // TODO: FIX THIS SHIT
-  findPostsByIds(postsIds: number[]): Promise<PostData[]> {
-    return this.createQueryBuilder("post")
-      .leftJoinAndSelect("post.user", "user")
-      .loadRelationCountAndMap("post.likesCount", "post.likes")
-      .loadRelationCountAndMap("post.commentsCount", "post.comments")
-      .select([
-        "post.id",
-        "post.text",
-        "post.createdAt",
-        "user.id",
-        "user.name",
-        "user.picture"
-      ])
-      .where("post.id IN (:...postsIds)", { postsIds })
-      .getMany();
-  }
 
   async updatePost(postId: number, userId: number, post: Partial<PostData>) {
     const { affected } = await this.update(
