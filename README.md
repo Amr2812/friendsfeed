@@ -24,7 +24,7 @@ A social network for friends to see their life updates only to support friends c
 ## Docs
 
 Swagger [https://friendsfeed.onrender.com/api/v1.0/docs](https://friendsfeed.onrender.com/api/v1.0/docs)
-> Note: This link is currently down, I will fix it when I find some time..
+> Note: It could take up to 30 seconds to load (because of the free hosting).
 
 ## Features
 
