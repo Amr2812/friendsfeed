@@ -34,7 +34,7 @@ The following features are available: (without details)
   * Sign up
   * Login
   * Logout
-  * JWT Refresh tokens
+  * JWT-based auth with Refresh tokens
 
 * Users:
   * Get my profile
@@ -78,6 +78,11 @@ The following features are available: (without details)
 * Feed (posts of my friends):
   * Store each user's feed using a distributed worker
   * Get feed of a user (autoscroll)
+ 
+## Design Patterns
+
+* Utilized the Dependency Injection Pattern (built in Nest.js by default) to achieve the [Dependency Inversion Principle (D in SOLID)](https://martinfowler.com/bliki/InversionOfControl.html) for loosely coupled modules.
+* Utilized the Repository Pattern to decouple the service (business logic) layer from the data access layer.
 
 ## Feed Worker
 
